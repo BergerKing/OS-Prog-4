@@ -119,15 +119,25 @@ def demo():
     referenceEntry = Entry(pagingPage, bd =5)
     referenceEntry.grid(row=2, column=2)
 
+    # blank space Labels
+    emptyLabelForSpacing1 = Label(pagingPage, relief=FLAT)
+    emptyLabelForSpacing1.grid(row=3, column=0)
+    emptyLabelForSpacing2 = Label(pagingPage, relief=FLAT)
+    emptyLabelForSpacing2.grid(row=4, column=0)
+    emptyLabelForSpacing3 = Label(pagingPage, relief=FLAT)
+    emptyLabelForSpacing3.grid(row=5, column=0)
+    
+    
+    
     # frame stack Label
     frameStackString = StringVar()
     frameStackLabel = Label(pagingPage, textvariable=frameStackString, relief=FLAT )
 
     frameStackString.set("Frame Stack")
-    frameStackLabel.grid(row=3, column=1)
+    frameStackLabel.grid(row=9, column=1)
 
     # frames
-    frameRow = 3
+    frameRow = 10
     for num in range(6):
         frameEntry = Entry(pagingPage, bd =5)
         frameEntry.grid(row=frameRow, column=2)
