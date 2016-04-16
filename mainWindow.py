@@ -7,21 +7,21 @@ def demo():
     root = ui.Tk()
     root.title("ttk.Notebook")
 
-    nb = ttk.Notebook(root)
+    notebook = ttk.Notebook(root)
 
     # adding Frames as pages for the ttk.Notebook 
     # first page, which would get widgets gridded into it
-    page1 = ttk.Frame(nb)
+    processSchedualerPage = ttk.Frame(notebook)
 
     # second page
-    page2 = ttk.Frame(nb)
+    memoryManagementPage = ttk.Frame(notebook)
 
     # third page
-    page3 = ttk.Frame(nb)
+    pagingPage = ttk.Frame(notebook)
 
-    nb.add(page1, text='One')
-    nb.add(page2, text='Two')
-    nb.add(page3, text='Three')
+    notebook.add(processSchedualerPage, text='Process Schedualer')
+    notebook.add(memoryManagementPage, text='Memory Management')
+    notebook.add(pagingPage, text='Page Replacement')
     
     nb.pack(expand=1, fill="both")
 
