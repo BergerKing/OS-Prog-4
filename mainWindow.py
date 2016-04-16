@@ -50,7 +50,7 @@ def demo():
 
     #Gantt Chart Label
     ganttString = StringVar()
-    ganttLabel = Label(processSchedualerPage, textvariable=timeLabel, relief=FLAT )
+    ganttLabel = Label(processSchedualerPage, textvariable=ganttString, relief=FLAT )
 
     ganttString.set("Gantt Chart")
     ganttLabel.grid(row=4, column=1)
@@ -119,16 +119,38 @@ def demo():
     referenceEntry = Entry(pagingPage, bd =5)
     referenceEntry.grid(row=2, column=2)
 
+    # frame stack Label
+    frameStackString = StringVar()
+    frameStackLabel = Label(pagingPage, textvariable=frameStackString, relief=FLAT )
+
+    frameStackString.set("Frame Stack")
+    frameStackLabel.grid(row=3, column=1)
+
+    # frames
+    frameRow = 3
+    for num in range(6):
+        frameEntry = Entry(pagingPage, bd =5)
+        frameEntry.grid(row=frameRow, column=2)
+        frameRow = frameRow + 1
+        
+
     # page faults label
     faultString = StringVar()
     faultLabel = Label(pagingPage, textvariable=faultString, relief=FLAT )
 
     faultString.set("Page Fault")
-    faultLabel.grid(row=4, column=1)
+    frameRow = frameRow + 1
+    faultLabel.grid(row=frameRow, column=1)
 
     #user Entry for frame number
     faultEntry = Entry(pagingPage, bd =5)
-    faultEntry.grid(row=4, column=2)
+    frameRow = frameRow + 1
+    faultEntry.grid(row=frameRow, column=2)
+
+    #page start button
+    pageBtn = ui.Button(pagingPage, text ="Start", command = helloCallBack)
+    frameRow = frameRow + 1
+    pageBtn.grid(row=frameRow, column=2)
     
     
 
