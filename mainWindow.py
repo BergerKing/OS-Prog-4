@@ -91,44 +91,44 @@ def demo():
     NRUCheckbox = Checkbutton(pagingPage, text = "NRU", variable = NRUVar, \
                  onvalue = 1, offvalue = 0, height=5, \
                  width = 20)
-    FIFOCheckbox.pack()
-    optimalCheckbox.pack()
-    LRUCheckbox.pack()
-    LFUCheckbox.pack()
-    NRUCheckbox.pack()
+    FIFOCheckbox.grid(row=0, column=0)
+    optimalCheckbox.grid(row=0, column=1)
+    LRUCheckbox.grid(row=0, column=2)
+    LFUCheckbox.grid(row=0, column=3)
+    NRUCheckbox.grid(row=0, column=4)
 
     # frames label
     frameString = StringVar()
     frameLabel = Label(pagingPage, textvariable=frameString, relief=FLAT )
 
-    frameString.set("Number of Frames")
-    frameLabel.pack()
+    frameString.set("Number of Frames:")
+    frameLabel.grid(row=1, column=1)
 
     #user Entry for frame number
     frameNumber = Entry(pagingPage, bd =5)
-    frameNumber.pack()
+    frameNumber.grid(row=1, column=2)
 
     # reference string label
     referenceString = StringVar()
     referenceLabel = Label(pagingPage, textvariable=referenceString, relief=FLAT )
 
     referenceString.set("Reference String")
-    referenceLabel.pack()
+    referenceLabel.grid(row=2, column=1)
 
     #for reference string
     referenceEntry = Entry(pagingPage, bd =5)
-    referenceEntry.pack()
+    referenceEntry.grid(row=2, column=2)
 
     # page faults label
     faultString = StringVar()
     faultLabel = Label(pagingPage, textvariable=faultString, relief=FLAT )
 
     faultString.set("Page Fault")
-    faultLabel.pack()
+    faultLabel.grid(row=4, column=1)
 
     #user Entry for frame number
     faultEntry = Entry(pagingPage, bd =5)
-    faultEntry.pack()
+    faultEntry.grid(row=4, column=2)
     
     
 
