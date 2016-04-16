@@ -32,7 +32,7 @@ def demo():
     C2.pack()
     C3.pack()
 
-    #label
+    #time quanta label
     timeLabel = StringVar()
     timeQuanta = Label(processSchedualerPage, textvariable=timeLabel, relief=FLAT )
 
@@ -45,9 +45,17 @@ def demo():
 
     #process display field
     processes = Text(processSchedualerPage)
-    processes.insert(INSERT, "Hello.....")
-    processes.insert(END, "Bye Bye.....")
+    processes.insert(INSERT, "Process          Burst Time          Arrival          Priority\n")
     processes.pack()
+
+    #Gantt Chart Label
+    ganttString = StringVar()
+    ganttLabel = Label(processSchedualerPage, textvariable=timeLabel, relief=FLAT )
+
+    ganttString.set("Gantt Chart")
+    ganttLabel.pack()
+
+    #Gantt Chart
     
 
     # start button
@@ -60,6 +68,58 @@ def demo():
 
     # third page
     pagingPage = ttk.Frame(notebook)
+
+    #checkboxes
+    FIFOVar = IntVar()
+    optimalVar = IntVar()
+    LRUVar = IntVar()
+    LFUVar = IntVar()
+    NRUVar = IntVar()
+    
+    FIFOCheckbox = Checkbutton(pagingPage, text = "FIFO", variable = FIFOVar, \
+                 onvalue = 1, offvalue = 0, height=5, \
+                 width = 20)
+    optimalCheckbox = Checkbutton(pagingPage, text = "Optimal", variable = optimalVar, \
+                 onvalue = 1, offvalue = 0, height=5, \
+                 width = 20)
+    LRUCheckbox = Checkbutton(pagingPage, text = "LRU", variable = LRUVar, \
+                 onvalue = 1, offvalue = 0, height=5, \
+                 width = 20)
+    LFUCheckbox = Checkbutton(pagingPage, text = "LFU", variable = LFUVar, \
+                 onvalue = 1, offvalue = 0, height=5, \
+                 width = 20)
+    NRUCheckbox = Checkbutton(pagingPage, text = "NRU", variable = NRUVar, \
+                 onvalue = 1, offvalue = 0, height=5, \
+                 width = 20)
+    FIFOCheckbox.pack()
+    optimalCheckbox.pack()
+    LRUCheckbox.pack()
+    LFUCheckbox.pack()
+    NRUCheckbox.pack()
+
+    # frames label
+    frameString = StringVar()
+    frameLabel = Label(pagingPage, textvariable=frameString, relief=FLAT )
+
+    frameString.set("Number of Frames")
+    frameLabel.pack()
+
+    #user Entry for frame number
+    frameNumber = Entry(pagingPage, bd =5)
+    frameNumber.pack()
+
+    # reference string label
+    referenceString = StringVar()
+    referenceLabel = Label(pagingPage, textvariable=referenceString, relief=FLAT )
+
+    referenceString.set("Reference String")
+    referenceLabel.pack()
+
+    #user Entry for frame number
+    referenceEntry = Entry(pagingPage, bd =5)
+    referenceEntry.pack()
+    
+    
 
     notebook.add(processSchedualerPage, text='Process Schedualer')
     notebook.add(memoryManagementPage, text='Memory Management')
