@@ -115,9 +115,20 @@ def demo():
     referenceString.set("Reference String")
     referenceLabel.pack()
 
-    #user Entry for frame number
+    #for reference string
     referenceEntry = Entry(pagingPage, bd =5)
     referenceEntry.pack()
+
+    # page faults label
+    faultString = StringVar()
+    faultLabel = Label(pagingPage, textvariable=faultString, relief=FLAT )
+
+    faultString.set("Page Fault")
+    faultLabel.pack()
+
+    #user Entry for frame number
+    faultEntry = Entry(pagingPage, bd =5)
+    faultEntry.pack()
     
     
 
