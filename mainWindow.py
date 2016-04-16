@@ -28,31 +28,31 @@ def demo():
     C3 = Checkbutton(processSchedualerPage, text = "SJF", variable = CheckVar3, \
                  onvalue = 1, offvalue = 0, height=5, \
                  width = 20)
-    C1.pack()
-    C2.pack()
-    C3.pack()
+    C1.grid(row=0, column=0)
+    C2.grid(row=0, column=1)
+    C3.grid(row=0, column=2)
 
     #label
     timeLabel = StringVar()
     timeQuanta = Label(processSchedualerPage, textvariable=timeLabel, relief=FLAT )
 
     timeLabel.set("Time Quanta")
-    timeQuanta.pack()
+    timeQuanta.grid(row=1, column=1)
 
     #user Entry for time quanta
     userTimeQuanta = Entry(processSchedualerPage, bd =5)
-    userTimeQuanta.pack()
+    userTimeQuanta.grid(row=2, column=1)
 
     #process display field
     processes = Text(processSchedualerPage)
     processes.insert(INSERT, "Hello.....")
     processes.insert(END, "Bye Bye.....")
-    processes.pack()
+    processes.grid(row=3, column=1)
     
 
     # start button
     processBtn = ui.Button(processSchedualerPage, text ="Start", command = helloCallBack)
-    processBtn.pack()
+    processBtn.grid(row=4, column=1)
 
 
     # second page
@@ -65,7 +65,7 @@ def demo():
     notebook.add(memoryManagementPage, text='Memory Management')
     notebook.add(pagingPage, text='Page Replacement')
     
-    notebook.pack(expand=1, fill="both")
+    notebook.grid(row=5, column=1)
 
     root.mainloop()
 
