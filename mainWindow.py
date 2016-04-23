@@ -1,179 +1,469 @@
 import sys
+from random import randint
+from operator import itemgetter
 from tkinter import ttk
 from tkinter import *
 import tkinter as ui
 
+class OsDemo():
+    def __init__(self):
+        self.demo()
 
-def demo():
-    root = ui.Tk()
-    root.title("OS Program 4")
-    root.minsize(width=500, height=500)
+    def demo(self):
+        self.root = ui.Tk()
+        self.root.title("OS Program 4")
+        self.root.minsize(width=500, height=500)
 
-    notebook = ttk.Notebook(root)
+        self.notebook = ttk.Notebook(self.root)
 
-    # adding Frames as pages for the ttk.Notebook 
-    # first page, which would get widgets gridded into it
-    processSchedualerPage = ttk.Frame(notebook)
+        # adding Frames as pages for the ttk.Notebook 
+        # first page, which would get widgets gridded into it
+        self.processSchedualerPage = ttk.Frame(self.notebook)
 
-    # Checkboxes for Process sch.
-    CheckVar1 = IntVar()
-    CheckVar2 = IntVar()
-    CheckVar3 = IntVar()
-    C1 = Checkbutton(processSchedualerPage, text = "RR", variable = CheckVar1, \
-                 onvalue = 1, offvalue = 0, height=5, \
-                 width = 20)
-    C2 = Checkbutton(processSchedualerPage, text = "Priority", variable = CheckVar2, \
-                 onvalue = 1, offvalue = 0, height=5, \
-                 width = 20)
-    C3 = Checkbutton(processSchedualerPage, text = "SJF", variable = CheckVar3, \
-                 onvalue = 1, offvalue = 0, height=5, \
-                 width = 20)
-    C1.grid(row=0, column=0)
-    C2.grid(row=0, column=1)
-    C3.grid(row=0, column=2)
+        # Checkboxes for Process sch.
+        self.CheckVar = StringVar()
 
-    #time quanta label
-    timeLabel = StringVar()
-    timeQuanta = Label(processSchedualerPage, textvariable=timeLabel, relief=FLAT )
+        self.C1 = Radiobutton(self.processSchedualerPage, text = "RR", variable = self.CheckVar, value= "RR")
+        self.C2 = Radiobutton(self.processSchedualerPage, text = "Priority", variable = self.CheckVar, value= "Priority")
+        self.C3 = Radiobutton(self.processSchedualerPage, text = "SJF", variable = self.CheckVar, value= "SJF")
+        self.C1.grid(row=0, column=0)
+        self.C2.grid(row=0, column=1)
+        self.C3.grid(row=0, column=2)
 
-    timeLabel.set("Time Quanta")
-    timeQuanta.grid(row=1, column=1)
+        #time quanta label
+        self.timeLabel = StringVar()
+        self.timeQuanta = Label(self.processSchedualerPage, textvariable=self.timeLabel, relief=FLAT )
 
-    #user Entry for time quanta
-    userTimeQuanta = Entry(processSchedualerPage, bd =5)
-    userTimeQuanta.grid(row=2, column=1)
+        self.timeLabel.set("Time Quanta")
+        self.timeQuanta.grid(row=1, column=1)
 
-    #process display field
-    processes = Text(processSchedualerPage)
-    processes.insert(INSERT, "Process          Burst Time          Arrival          Priority\n")
-    processes.grid(row=3, column=1)
+        #user Entry for time quanta
+        self.userTimeQuanta = Entry(self.processSchedualerPage, bd =5)
+        self.userTimeQuanta.grid(row=2, column=1)
 
-    #Gantt Chart Label
-    ganttString = StringVar()
-    ganttLabel = Label(processSchedualerPage, textvariable=ganttString, relief=FLAT )
-
-    ganttString.set("Gantt Chart")
-    ganttLabel.grid(row=4, column=1)
-
-    #Gantt Chart
-    
-
-    # start button
-    processBtn = ui.Button(processSchedualerPage, text ="Start", command = helloCallBack)
-    processBtn.grid(row=6, column=1)
-
-
-    # second page
-    memoryManagementPage = ttk.Frame(notebook)
-
-    # third page
-    pagingPage = ttk.Frame(notebook)
-
-    #checkboxes
-    FIFOVar = IntVar()
-    optimalVar = IntVar()
-    LRUVar = IntVar()
-    LFUVar = IntVar()
-    NRUVar = IntVar()
-    
-    FIFOCheckbox = Checkbutton(pagingPage, text = "FIFO", variable = FIFOVar, \
-                 onvalue = 1, offvalue = 0, height=5, \
-                 width = 20)
-    optimalCheckbox = Checkbutton(pagingPage, text = "Optimal", variable = optimalVar, \
-                 onvalue = 1, offvalue = 0, height=5, \
-                 width = 20)
-    LRUCheckbox = Checkbutton(pagingPage, text = "LRU", variable = LRUVar, \
-                 onvalue = 1, offvalue = 0, height=5, \
-                 width = 20)
-    LFUCheckbox = Checkbutton(pagingPage, text = "LFU", variable = LFUVar, \
-                 onvalue = 1, offvalue = 0, height=5, \
-                 width = 20)
-    NRUCheckbox = Checkbutton(pagingPage, text = "NRU", variable = NRUVar, \
-                 onvalue = 1, offvalue = 0, height=5, \
-                 width = 20)
-    FIFOCheckbox.grid(row=0, column=0)
-    optimalCheckbox.grid(row=0, column=1)
-    LRUCheckbox.grid(row=0, column=2)
-    LFUCheckbox.grid(row=0, column=3)
-    NRUCheckbox.grid(row=0, column=4)
-
-    # frames label
-    frameString = StringVar()
-    frameLabel = Label(pagingPage, textvariable=frameString, relief=FLAT )
-
-    frameString.set("Number of Frames:")
-    frameLabel.grid(row=1, column=1)
-
-    #user Entry for frame number
-    frameNumber = Entry(pagingPage, bd =5)
-    frameNumber.grid(row=1, column=2)
-
-    # reference string label
-    referenceString = StringVar()
-    referenceLabel = Label(pagingPage, textvariable=referenceString, relief=FLAT )
-
-    referenceString.set("Reference String")
-    referenceLabel.grid(row=2, column=1)
-
-    #for reference string
-    referenceEntry = Entry(pagingPage, bd =5)
-    referenceEntry.grid(row=2, column=2)
-
-    # blank space Labels
-    emptyLabelForSpacing1 = Label(pagingPage, relief=FLAT)
-    emptyLabelForSpacing1.grid(row=3, column=0)
-    emptyLabelForSpacing2 = Label(pagingPage, relief=FLAT)
-    emptyLabelForSpacing2.grid(row=4, column=0)
-    emptyLabelForSpacing3 = Label(pagingPage, relief=FLAT)
-    emptyLabelForSpacing3.grid(row=5, column=0)
-    
-    
-    
-    # frame stack Label
-    frameStackString = StringVar()
-    frameStackLabel = Label(pagingPage, textvariable=frameStackString, relief=FLAT )
-
-    frameStackString.set("Frame Stack")
-    frameStackLabel.grid(row=9, column=1)
-
-    # frames
-    frameRow = 10
-    for num in range(6):
-        frameEntry = Entry(pagingPage, bd =5)
-        frameEntry.grid(row=frameRow, column=2)
-        frameRow = frameRow + 1
+        #process display field
+        self.processChart = Text(self.processSchedualerPage)
+        self.processChart.insert(INSERT, "Process          Burst Time          Arrival          Priority\n")
+        self.processChart.grid(row=3, column=1)
         
 
-    # page faults label
-    faultString = StringVar()
-    faultLabel = Label(pagingPage, textvariable=faultString, relief=FLAT )
+        # start button
+        self.processBtn = ui.Button(self.processSchedualerPage, text ="Start", command = self.processCallBack)
+        self.processBtn.grid(row=6, column=1)
 
-    faultString.set("Page Fault")
-    frameRow = frameRow + 1
-    faultLabel.grid(row=frameRow, column=1)
 
-    #user Entry for frame number
-    faultEntry = Entry(pagingPage, bd =5)
-    frameRow = frameRow + 1
-    faultEntry.grid(row=frameRow, column=2)
 
-    #page start button
-    pageBtn = ui.Button(pagingPage, text ="Start", command = helloCallBack)
-    frameRow = frameRow + 1
-    pageBtn.grid(row=frameRow, column=2)
+
+
+
+
+
+
+
+
+        # second page
+        self.memoryManagementPage = ttk.Frame(self.notebook)
+
+        # third page
+        self.pagingPage = ttk.Frame(self.notebook)
+
+        #checkboxes
+        self.pageVar = StringVar()
+        
+        self.FIFORadio = Radiobutton(self.pagingPage, text = "FIFO", variable = self.pageVar, value = "FIFO")
+        self.optimalRadio = Radiobutton(self.pagingPage, text = "Optimal", variable = self.pageVar, value = "Optimal")
+        self.LRURadio = Radiobutton(self.pagingPage, text = "LRU", variable = self.pageVar, value = "LRU")
+        self.LFURadio = Radiobutton(self.pagingPage, text = "LFU", variable = self.pageVar, value = "LFU")
+        self.NRURadio = Radiobutton(self.pagingPage, text = "NRU", variable = self.pageVar, value = "NRU")
+        
+        self.FIFORadio.grid(row=0, column=0)
+        self.optimalRadio.grid(row=0, column=1)
+        self.LRURadio.grid(row=0, column=2)
+        self.LFURadio.grid(row=0, column=3)
+        self.NRURadio.grid(row=0, column=4)
+
+        # frames label
+        self.frameString = StringVar()
+        self.frameLabel = Label(self.pagingPage, textvariable=self.frameString, relief=FLAT )
+
+        self.frameString.set("Number of Frames:")
+        self.frameLabel.grid(row=1, column=1)
+
+        #user Entry for frame number
+        self.frameNumber = Entry(self.pagingPage, bd =5)
+        self.frameNumber.grid(row=1, column=2)
+
+        # reference string label
+        self.referenceString = StringVar()
+        self.referenceLabel = Label(self.pagingPage, textvariable=self.referenceString, relief=FLAT )
+
+        self.referenceString.set("Reference String")
+        self.referenceLabel.grid(row=2, column=1)
+
+        #for reference string
+        self.referenceEntry = Entry(self.pagingPage, bd =5)
+        self.referenceEntry.grid(row=2, column=2)
+
+        # blank space Labels
+        emptyLabelForSpacing1 = Label(self.pagingPage, relief=FLAT)
+        emptyLabelForSpacing1.grid(row=3, column=0)
+        emptyLabelForSpacing2 = Label(self.pagingPage, relief=FLAT)
+        emptyLabelForSpacing2.grid(row=4, column=0)
+        emptyLabelForSpacing3 = Label(self.pagingPage, relief=FLAT)
+        emptyLabelForSpacing3.grid(row=5, column=0)
+        
+        
+        
+        # frame stack Label
+        self.frameStackString = StringVar()
+        self.frameStackLabel = Label(self.pagingPage, textvariable=self.frameStackString, relief=FLAT )
+
+        self.frameStackString.set("Frame Stack")
+        self.frameStackLabel.grid(row=9, column=1)
+
+        # frames
+        frameRow = 10
+        self.frameEntry = []
+        self.frameString = []
+        for num in range(3):
+            self.frameString.append(StringVar())
+            self.frameEntry.append(Entry(self.pagingPage, textvariable = self.frameString[num], bd=5 ) )
+            self.frameEntry[num].grid(row=frameRow, column=2)
+            self.setFrames()
+            frameRow = frameRow + 1
+            
+
+        # page faults label
+        self.faultString = StringVar()
+        self.faultLabel = Label(self.pagingPage, textvariable=self.faultString, relief=FLAT )
+
+        self.faultString.set("Page Fault")
+        frameRow = frameRow + 1
+        self.faultLabel.grid(row=frameRow, column=1)
+
+        #Entry for frame number
+        self.faultEntry = Entry(self.pagingPage, bd =5)
+        frameRow = frameRow + 1
+        self.faultEntry.grid(row=frameRow, column=2)
+
+        #page start button
+        self.pageBtn = ui.Button(self.pagingPage, text ="Start", command = self.pageCallBack)
+        frameRow = frameRow + 1
+        self.pageBtn.grid(row=frameRow, column=2)
+
+        self.pushBtn = ui.Button(self.pagingPage, text ="Push", command = self.LFU)
+        self.pushBtn.grid(row=frameRow, column=3)
+        
+        
+
+        self.notebook.add(self.processSchedualerPage, text='Process Schedualer')
+        self.notebook.add(self.memoryManagementPage, text='Memory Management')
+        self.notebook.add(self.pagingPage, text='Page Replacement')
+        
+        self.notebook.grid(row=5, column=1)
+
+        self.root.mainloop()
+
+    def processCallBack(self):
+        
+        self.process = self.generateProcesses()
+        self.writeOutProcess()
+
+        if(self.CheckVar.get() == "RR"):
+            self.roundRobin()
+        if(self.CheckVar.get() == "Priority"):
+            self.priority()
+        if(self.CheckVar.get() == "SJF"):
+            self.SJF()
+
+
+    def generateProcesses(self):
+        processes = []
+
+        for i in range(4):
+           current = []
+           current.append("P" + str(i))
+           current.append(randint(1, 9))
+           current.append(randint(1,9))
+           current.append(randint(1,5))
+
+           processes.append(current)
+
+        return processes
+
+    def writeOutProcess(self):
+        self.processChart.delete('1.0', END)
+        self.processChart.insert(INSERT, "Process          Burst Time          Arrival          Priority\n")
+        for i in range(4):
+            self.processChart.insert(INSERT, str(self.process[i][0]) + "                        " + str(self.process[i][1]) + "               " \
+                                 + str(self.process[i][2]) + "              "  + str(self.process[i][3]) + "\n")
+    def roundRobin(self):
+        time = int(self.userTimeQuanta.get())
+        
+        processSort = self.process
+        processSort = sorted(processSort, key=itemgetter(2))
+        timeTaken = processSort[0][2]
+        gantt = []
+        ganttTimeUsed = [0]
+        timeCount = 0
+        while ( processSort[0][1] > 0 or processSort[1][1] > 0 or processSort[2][1] > 0 or processSort[3][1] > 0 ):
+            for t in range(4):
+                if (processSort[t][2] <= timeTaken and processSort[t][1] > 0):
+                    gantt.append(processSort[t][0])
+                    timeCount += time
+                    ganttTimeUsed.append(timeCount)
+                    processSort[t][1] -= time
+                timeTaken += time
+                
+                    
+                
+
+        self.generateGantt(gantt, ganttTimeUsed)
+
+    def SJF(self):
+        processSort = self.process
+        processSort = sorted(processSort, key=itemgetter(2))
+        processSort = sorted(processSort, key=itemgetter(1))
+        gantt = []
+        for t in range(4):
+            gantt.append(processSort[t][0])
+            
+        ganttTimeUsed = [0]
+        for t in range(4):
+            ganttTimeUsed.append((ganttTimeUsed[t] + processSort[t][1]))
+
+        self.generateGantt(gantt, ganttTimeUsed)
+
+    def priority(self):
+        print("here")
+        processSort = self.process
+        processSort = sorted(processSort, key=itemgetter(2))
+        processSort = sorted(processSort, key=itemgetter(3))
+        gantt = []
+        ganttTimeUsed = [0]
+        for t in range(4):
+            gantt.append(processSort[t][0])
+            ganttTimeUsed.append((ganttTimeUsed[t] + processSort[t][1]))
+
+        self.generateGantt(gantt, ganttTimeUsed)
+
+
+            
+    def generateGantt(self, gantt, ganttTimeUsed):
+        self.processChart.insert(INSERT, "\n \n \n")
+        self.processChart.insert(INSERT, "Gantt Chart: \n")
+        processOrder = "   "
+        processTime = ""
+        for proc in gantt:
+            processOrder = processOrder + proc + "     "
+        for time in ganttTimeUsed:
+            if (time == 0):
+                processTime = str(time)
+            elif (time > 9):
+                 processTime = processTime + "      " +  str(time)
+            else:
+                processTime = processTime + "     " +  str(time)
+            
+        self.processChart.insert(INSERT, processOrder + "\n")
+        self.processChart.insert(INSERT, processTime + "\n")
+
+
+    #THRID PAGE OF FUNCTIONS
+    def pageCallBack(self):
+        self.generateRefString()
+
+    def generateRefString(self):
+        self.refList = []
+        self.refString = ""
+        for index in range(11):
+            self.refList.append(randint(0, 9))
+        for index in self.refList:
+            self.refString = self.refString + " " + str(index)
+
+        self.referenceEntry.delete(0, END)
+        self.referenceEntry.insert(0, self.refString)
+        self.referenceEntry.configure(state='readonly')
+
+    def setFrames(self):
+        for index in self.frameEntry:
+            index.delete(0, END)
+            index.insert(0, "N/A")
+
+    def FIFO(self):
+        faultCount = 0
+        for index in self.refList:
+            flag = False
+            for val in self.frameEntry:
+                print("val:" + val.get() + " " + str(index) )
+                if (str(index) == val.get()):
+                    print("skip")
+                    flag = True
+                    
+            if (flag == False):
+                faultCount += 1
+                for val in range(3):
+                        
+                    if (val != 0):
+                        frame = self.frameEntry[val].get()
+                        self.frameEntry[val].delete(0, END)
+                        self.frameEntry[val].insert(0, curr)
+                        print(curr)
+                        curr = frame
+                    else:
+                        curr = self.frameEntry[0].get()
+                        self.frameEntry[0].delete(0, END)
+                        self.frameEntry[0].insert(0, index)
+
+        
+        self.faultEntry.delete(0, END)
+        self.faultEntry.insert(0, faultCount)    
+        return
+
+    def Optimal(self):
+        
+        faultCount = 0
+        for index in self.refList:
+            
+            flag = False
+            for val in self.frameEntry:
+                if (str(index) == val.get()):
+                    indexprocessed.append(str(index))
+                    flag = True
+                    break
+                elif (val.get() == "N/A"):
+                    val.delete(0, END)
+                    val.insert(0, index)
+                    faultCount += 1
+                    flag = True
+                    indexprocessed.append(str(index))
+                    break
+                    
+            if (flag == False):
+                maxDist = 0
+                found = -1
+                faultCount += 1
+                for val in range(3):
+                    
+                    frame = self.frameEntry[val].get()
+                    dist = 0
+                    for process in reversed(indexprocessed):
+                        dist += 1
+                        if (process == frame):
+                            if(dist >= maxDist):
+                                maxDist = dist
+                                found = val
+                                break
+                            else:
+                                break
+                            
+                if (found != -1):
+                    self.frameEntry[found].delete(0, END)
+                    self.frameEntry[found].insert(0, index)
+                    indexprocessed.append(str(index))
+                
+        self.faultEntry.delete(0, END)
+        self.faultEntry.insert(0, faultCount)
+        return
+
     
+    def LRU(self):
+        
+        faultCount = 0
+        indexprocessed = []
+        for index in self.refList:
+            
+            flag = False
+            for val in self.frameEntry:
+                if (str(index) == val.get()):
+                    indexprocessed.append(str(index))
+                    flag = True
+                    break
+                elif (val.get() == "N/A"):
+                    val.delete(0, END)
+                    val.insert(0, index)
+                    faultCount += 1
+                    flag = True
+                    indexprocessed.append(str(index))
+                    break
+                    
+            if (flag == False):
+                maxDist = 0
+                found = -1
+                faultCount += 1
+                for val in range(3):
+                    
+                    frame = self.frameEntry[val].get()
+                    dist = 0
+                    for process in reversed(indexprocessed):
+                        dist += 1
+                        if (process == frame):
+                            if(dist >= maxDist):
+                                maxDist = dist
+                                found = val
+                                break
+                            else:
+                                break
+                            
+                if (found != -1):
+                    self.frameEntry[found].delete(0, END)
+                    self.frameEntry[found].insert(0, index)
+                    indexprocessed.append(str(index))
+                
+        self.faultEntry.delete(0, END)
+        self.faultEntry.insert(0, faultCount)    
+        return
     
+    def LFU(self):
+        refCount = [0,0,0,0,0,0,0,0,0,0]
+        faultCount = 0
+        leastRefCount = 100
+        
+        for index in self.refList:
+            
+            flag = False
+            for val in self.frameEntry:
+                if (str(index) == val.get()):
+                    refCount[int(index)] += 1
+                    flag = True
+                    break
+                elif (val.get() == "N/A"):
+                    val.delete(0, END)
+                    val.insert(0, index)
+                    faultCount += 1
+                    refCount[int(index)] += 1
+                    flag = True
+                    break
+                
+            if (flag == False):
+                found = -1
+                faultCount += 1
+                refCount[int(index)] += 1
+                for val in range(3):
+                    
+                    frame = self.frameEntry[val].get()
+                    if (refCount[int(frame)] < leastRefCount):
+                        leastRefCount = refCount[int(frame)]
+                        found = val
+                            
+                if (found != -1):
+                    self.frameEntry[found].delete(0, END)
+                    self.frameEntry[found].insert(0, index)
+                    leastRefCount = 100
+                
+        self.faultEntry.delete(0, END)
+        self.faultEntry.insert(0, faultCount)    
 
-    notebook.add(processSchedualerPage, text='Process Schedualer')
-    notebook.add(memoryManagementPage, text='Memory Management')
-    notebook.add(pagingPage, text='Page Replacement')
+        
+        return
+    def NRU(self):
+        return
+        
+        
+            
+        
+        
+        
     
-    notebook.grid(row=5, column=1)
-
-    root.mainloop()
-
-def helloCallBack():
-    print("I work")
 
 if __name__ == "__main__":
-    demo()
+    OsDemo()
