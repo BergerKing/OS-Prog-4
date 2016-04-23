@@ -151,7 +151,7 @@ class OsDemo():
         frameRow = frameRow + 1
         self.pageBtn.grid(row=frameRow, column=2)
 
-        self.pushBtn = ui.Button(self.pagingPage, text ="Push", command = self.LFU)
+        self.pushBtn = ui.Button(self.pagingPage, text ="Push", command = self.Optimal)
         self.pushBtn.grid(row=frameRow, column=3)
         
         
@@ -255,14 +255,14 @@ class OsDemo():
         processOrder = "   "
         processTime = ""
         for proc in gantt:
-            processOrder = processOrder + proc + "     "
+            processOrder = processOrder + proc.rjust(6)
         for time in ganttTimeUsed:
             if (time == 0):
-                processTime = str(time)
+                processTime = str(time).rjust(6)
             elif (time > 9):
-                 processTime = processTime + "      " +  str(time)
+                 processTime = processTime + str(time).rjust(6)
             else:
-                processTime = processTime + "     " +  str(time)
+                processTime = processTime + str(time).rjust(6)
             
         self.processChart.insert(INSERT, processOrder + "\n")
         self.processChart.insert(INSERT, processTime + "\n")
@@ -294,9 +294,7 @@ class OsDemo():
         for index in self.refList:
             flag = False
             for val in self.frameEntry:
-                print("val:" + val.get() + " " + str(index) )
                 if (str(index) == val.get()):
-                    print("skip")
                     flag = True
                     
             if (flag == False):
@@ -307,7 +305,6 @@ class OsDemo():
                         frame = self.frameEntry[val].get()
                         self.frameEntry[val].delete(0, END)
                         self.frameEntry[val].insert(0, curr)
-                        print(curr)
                         curr = frame
                     else:
                         curr = self.frameEntry[0].get()
@@ -320,47 +317,54 @@ class OsDemo():
         return
 
     def Optimal(self):
-        
+        checkList = self.refList
         faultCount = 0
-        for index in self.refList:
+        for index in range(len(self.refList)):
             
             flag = False
             for val in self.frameEntry:
-                if (str(index) == val.get()):
-                    indexprocessed.append(str(index))
+                if (str(self.refList[index]) == val.get()):
                     flag = True
                     break
                 elif (val.get() == "N/A"):
                     val.delete(0, END)
-                    val.insert(0, index)
+                    val.insert(0, self.refList[index])
                     faultCount += 1
                     flag = True
-                    indexprocessed.append(str(index))
                     break
+
                     
             if (flag == False):
                 maxDist = 0
                 found = -1
                 faultCount += 1
                 for val in range(3):
-                    
+
+                    found = -1
                     frame = self.frameEntry[val].get()
                     dist = 0
-                    for process in reversed(indexprocessed):
+                    curr = index
+                    while (curr < len(checkList) ):
                         dist += 1
-                        if (process == frame):
+                        
+                        if (str(checkList[curr]) == frame):
                             if(dist >= maxDist):
                                 maxDist = dist
                                 found = val
-                                break
-                            else:
-                                break
+                            break
+                        else:
+                            curr += 1
                             
+                    if (found == -1):
+                        maxDist = 100
+                        found = val
+                        break
+                        
                 if (found != -1):
                     self.frameEntry[found].delete(0, END)
-                    self.frameEntry[found].insert(0, index)
-                    indexprocessed.append(str(index))
-                
+                    self.frameEntry[found].insert(0, self.refList[index])
+
+                    
         self.faultEntry.delete(0, END)
         self.faultEntry.insert(0, faultCount)
         return
@@ -456,6 +460,70 @@ class OsDemo():
         
         return
     def NRU(self):
+
+        #needs a pair for each frame
+
+        framePairs = []
+        
+        faultCount = 0
+        for index in self.refList:
+
+            flag = False
+            for val in self.frameEntry:
+                if (str(index) == val.get()):
+                    flag = True
+                    break
+                elif (val.get() == "N/A"):
+                    val.delete(0, END)
+                    val.insert(0, index)
+                    faultCount += 1
+                    flag = True
+                    break
+
+                    
+            if (flag == False):
+                found = -1
+                faultCount += 1
+                for val in range(3):
+
+                    found = -1
+                    frame = self.frameEntry[val].get()
+                    curr = index
+
+                    #if (0,0) put in (0,0) list
+
+                    #if (0,1) put in (0,1) list
+
+                    #if (1,0) put in (1,0) list
+
+                    #if (1,1) ignore actually don't do this thing
+                            
+                    if (found == -1):
+                        maxDist = 100
+                        found = val
+                        break
+
+                #delete random from (0,0) list
+
+                #if none deleted
+                #delete random from (0,1) list
+
+                #if none deleted
+                #delete random from (1,0) list
+
+                #if none deleted
+                #delete random from all frames
+
+                    
+                if (found != -1):
+                    self.frameEntry[found].delete(0, END)
+                    self.frameEntry[found].insert(0, self.refList[index])
+
+                    
+        self.faultEntry.delete(0, END)
+        self.faultEntry.insert(0, faultCount)
+
+        
         return
         
         
