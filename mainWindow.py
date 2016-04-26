@@ -60,9 +60,148 @@ class OsDemo():
 
 
 
-
-        # second page
+        ###################################################################################
+        # second page #####################################################################
+        ###################################################################################
         self.memoryManagementPage = ttk.Frame(self.notebook)
+
+
+        # Table Look Up label label
+        self.lookUpTimeString = StringVar()
+        self.lookUpTime = Label(self.memoryManagementPage, textvariable=self.lookUpTimeString, relief=FLAT )
+
+        self.lookUpTimeString.set("Tab Lookup Time: ")
+        self.lookUpTime.grid(row=1, column=1)
+
+
+        #user Entry for Table look up times
+        self.lookUpTimeNumber = Entry(self.memoryManagementPage, bd =5)
+        self.lookUpTimeNumber.grid(row=1, column=2)
+
+
+        # Memery Look Up label label
+        self.memoryLookUpTimeString = StringVar()
+        self.memoryLookUpTime = Label(self.memoryManagementPage, textvariable=self.memoryLookUpTimeString, relief=FLAT )
+
+        self.memoryLookUpTimeString.set("Memory Lookup Time: ")
+        self.memoryLookUpTime.grid(row=1, column=3)
+
+
+        #user Entry for memory look up times
+        self.memoryLookUpTimeNumber = Entry(self.memoryManagementPage, bd =5)
+        self.memoryLookUpTimeNumber.grid(row=1, column=4)
+
+
+        # Number of Pages Label
+        self.numberOfPagesString = StringVar()
+        self.numberOfPages = Label(self.memoryManagementPage, textvariable=self.numberOfPagesString, relief=FLAT )
+
+        self.numberOfPagesString.set("Number of Pages: ")
+        self.numberOfPages.grid(row=2, column=2)
+
+
+        #user Entry for number of pages
+        #this is the number of pages in the page table in memory
+        self.numberOfPagesNumber = Entry(self.memoryManagementPage, bd =5)
+        self.numberOfPagesNumber.grid(row=2, column=3)
+
+
+        # Number of Frames Label
+        # This is the number of things in RAM
+        self.numberOfFramesString = StringVar()
+        self.numberOfFrames = Label(self.memoryManagementPage, textvariable=self.numberOfFramesString, relief=FLAT )
+
+        self.numberOfFramesString.set("Number of Pages: ")
+        self.numberOfFrames.grid(row=2, column=4)
+
+
+        #user Entry for number of frames
+        self.numberOfFramesNumber = Entry(self.memoryManagementPage, bd =5)
+        self.numberOfFramesNumber.grid(row=2, column=5 )
+
+
+        # blank space to push canvas down
+        emptyLabelForSpacing1 = Label(self.memoryManagementPage, relief=FLAT)
+        emptyLabelForSpacing1.grid(row=3, column=0)
+        emptyLabelForSpacing2 = Label(self.memoryManagementPage, relief=FLAT)
+        emptyLabelForSpacing2.grid(row=4, column=0)
+        emptyLabelForSpacing3 = Label(self.memoryManagementPage, relief=FLAT)
+        emptyLabelForSpacing3.grid(row=5, column=0)
+
+        
+        #The Canvas #################################################
+        memoryArcitectureCanvas = Canvas(self.memoryManagementPage, width=600, height=200)
+        memoryArcitectureCanvas.grid( row=6, column=1, columnspan=5, rowspan=3 )
+
+        #cpu box and start line
+        memoryArcitectureCanvas.create_rectangle( 30, 90, 70, 110, fill="" )
+        memoryArcitectureCanvas.create_text( 50, 100, text="CPU" )
+        memoryArcitectureCanvas.create_line( 70, 100, 90, 100 )
+
+        #left hand side double box
+        memoryArcitectureCanvas.create_rectangle( 90, 90, 130, 110, fill="" )
+        memoryArcitectureCanvas.create_rectangle( 130, 90, 170, 110, fill="" )
+
+        #down pointing line to expanding table
+        memoryArcitectureCanvas.create_line( 110, 110, 200, 200 )
+        memoryArcitectureCanvas.create_line( 200, 200, 270, 100 )
+
+
+        #lines that connect double boxes
+        memoryArcitectureCanvas.create_line( 170, 100, 270, 80 )
+        memoryArcitectureCanvas.create_line( 270, 80, 330, 90 )
+
+        #right hand side double box
+        memoryArcitectureCanvas.create_rectangle( 270, 90, 310, 110, fill="" )
+        memoryArcitectureCanvas.create_rectangle( 310, 90, 350, 110, fill="" )
+
+        #farthest right hand line segment to memory pages
+        memoryArcitectureCanvas.create_line( 350, 100, 400, 200 )
+
+        #left side double box
+        memoryArcitectureCanvas.create_text( 110, 100, text="CPU" )
+        memoryArcitectureCanvas.create_text( 150, 100, text="CPU" )
+
+        #right side double box
+        memoryArcitectureCanvas.create_text( 290, 100, text="CPU" )
+        memoryArcitectureCanvas.create_text( 330, 100, text="CPU" )
+        # End of Canvas ##############################################
+
+
+        # frames in ram list
+        frameRow = 9
+        self.inRamFrameEntry = []
+        self.inRamframeString = []
+        for num in range(3):
+            self.inRamframeString.append(StringVar())
+            self.inRamFrameEntry.append(Entry(self.memoryManagementPage, textvariable = self.inRamframeString[num], bd=5 ) )
+            self.inRamFrameEntry[num].grid(row=frameRow, column=2)
+            self.setInRamFrames()
+            frameRow = frameRow + 1
+
+        # Pages in memory list
+        frameRow = 9
+        self.inMemPageEntry = []
+        self.inMemPageString = []
+        for num in range(3):
+            self.inMemPageString.append(StringVar())
+            self.inMemPageEntry.append(Entry(self.memoryManagementPage, textvariable = self.inMemPageString[num], bd=5 ) )
+            self.inMemPageEntry[num].grid(row=frameRow, column=4)
+            self.setInMemPages()
+            frameRow = frameRow + 1
+
+        ###################################################################################
+        # end of second page ##############################################################
+        ###################################################################################
+
+
+
+
+
+
+
+
+
 
         # third page
         self.pagingPage = ttk.Frame(self.notebook)
@@ -267,6 +406,28 @@ class OsDemo():
         self.processChart.insert(INSERT, processOrder + "\n")
         self.processChart.insert(INSERT, processTime + "\n")
 
+    #Second Page Functions #############################################
+
+    def setInRamFrames(self):
+        for index in self.inRamFrameEntry:
+            index.delete(0, END)
+            index.insert(0, "N/A")
+
+    def setInMemPages(self):
+        for index in self.inMemPageEntry:
+            index.delete(0, END)
+            index.insert(0, "N/A")
+
+    # Calculate hit miss ration
+    def hitMisRation(numberHit, memoryLookUpTime, numberMiss, tableLookupTime):
+        return ( (numberHit/(numberHit+numberMiss) * memoryLookUpTime) + (numberMiss/(numberMiss + numberHit) * tableLookupTime) )
+
+    # need to generate a page, and an offset
+
+    # need to update picture based on click
+
+
+    #End of second page ################################################
 
     #THRID PAGE OF FUNCTIONS
     def pageCallBack(self):
