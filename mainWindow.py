@@ -147,11 +147,11 @@ class OsDemo():
         self.cpuToLeftBoxLine = self.memoryArcitectureCanvas.create_line( 70, 100, 90, 100 )
 
         #left hand side double box
-        self.memoryArcitectureCanvas.create_rectangle( 90, 90, 130, 110, fill="" )
+        self.leftBoxLeftHalf = self.memoryArcitectureCanvas.create_rectangle( 90, 90, 130, 110, fill="" )
         self.memoryArcitectureCanvas.create_rectangle( 130, 90, 170, 110, fill="" )
 
         #down pointing line to expanding table
-        self.memoryArcitectureCanvas.create_line( 110, 110, 200, 200 )
+        self.leftBoxLineToBuffer = self.memoryArcitectureCanvas.create_line( 110, 110, 200, 200 )
         self.memoryArcitectureCanvas.create_line( 200, 200, 270, 100 )
 
 
@@ -167,7 +167,7 @@ class OsDemo():
         self.memoryArcitectureCanvas.create_line( 350, 100, 400, 200 )
 
         #left side double box
-        self.memoryArcitectureCanvas.create_text( 110, 100, text="val" )
+        self.leftBoxMemoryValue = self.memoryArcitectureCanvas.create_text( 110, 100, text="val" )
         self.memoryArcitectureCanvas.create_text( 150, 100, text="?" )
 
         #right side double box
@@ -481,7 +481,8 @@ class OsDemo():
         self.MemoryFlag = True
 
     def determineHit(self):
-        self.hit = True
+        #loop though frame buffer, if address not there return false
+        self.hit = False
         return
 
     def paintHit(self):
@@ -490,6 +491,11 @@ class OsDemo():
         self.memoryArcitectureCanvas.itemconfig(self.cpuBox, fill="green")
         self.memoryArcitectureCanvas.itemconfig(self.cpuText, fill="white")
         self.memoryArcitectureCanvas.tag_raise(self.cpuText)
+        self.memoryArcitectureCanvas.itemconfig(self.cpuToLeftBoxLine, fill="green")
+        
+        self.memoryArcitectureCanvas.itemconfig(self.leftBoxLeftHalf, fill="green")
+        self.memoryArcitectureCanvas.itemconfig(self.leftBoxMemoryValue, fill="white")
+        self.memoryArcitectureCanvas.itemconfig(self.leftBoxLineToBuffer, fill="green")
         self.memoryArcitectureCanvas.itemconfig(self.cpuToLeftBoxLine, fill="green")
         return
 
