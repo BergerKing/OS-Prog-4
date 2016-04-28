@@ -152,7 +152,7 @@ class OsDemo():
 
         #down pointing line to expanding table
         self.leftBoxLineToBuffer = self.memoryArcitectureCanvas.create_line( 110, 110, 200, 200 )
-        self.memoryArcitectureCanvas.create_line( 200, 200, 270, 100 )
+        self.rightBoxLineToBuffer = self.memoryArcitectureCanvas.create_line( 200, 200, 270, 100 )
 
 
         #lines that connect double boxes
@@ -160,7 +160,7 @@ class OsDemo():
         self.memoryArcitectureCanvas.create_line( 270, 80, 330, 90 )
 
         #right hand side double box
-        self.memoryArcitectureCanvas.create_rectangle( 270, 90, 310, 110, fill="" )
+        self.rightBoxLeftHalf = self.memoryArcitectureCanvas.create_rectangle( 270, 90, 310, 110, fill="" )
         self.memoryArcitectureCanvas.create_rectangle( 310, 90, 350, 110, fill="" )
 
         #farthest right hand line segment to memory pages
@@ -171,7 +171,7 @@ class OsDemo():
         self.memoryArcitectureCanvas.create_text( 150, 100, text="?" )
 
         #right side double box
-        self.memoryArcitectureCanvas.create_text( 290, 100, text="val" )
+        self.rightBoxMemoryValue = self.memoryArcitectureCanvas.create_text( 290, 100, text="val" )
         self.memoryArcitectureCanvas.create_text( 330, 100, text="ans" )
         # End of Canvas ##############################################
 
@@ -502,6 +502,21 @@ class OsDemo():
     def paintMiss(self):
         #use the labels from the objects in the canvas to change item's color
         #misses will be red
+        self.memoryArcitectureCanvas.itemconfig(self.cpuBox, fill="red")
+        self.memoryArcitectureCanvas.itemconfig(self.cpuText, fill="white")
+        self.memoryArcitectureCanvas.tag_raise(self.cpuText)
+        self.memoryArcitectureCanvas.itemconfig(self.cpuToLeftBoxLine, fill="red")
+        
+        self.memoryArcitectureCanvas.itemconfig(self.leftBoxLeftHalf, fill="red")
+        self.memoryArcitectureCanvas.itemconfig(self.leftBoxMemoryValue, fill="white")
+        self.memoryArcitectureCanvas.itemconfig(self.leftBoxLineToBuffer, fill="red")
+        self.memoryArcitectureCanvas.itemconfig(self.cpuToLeftBoxLine, fill="red")
+
+        self.memoryArcitectureCanvas.itemconfig(self.rightBoxLineToBuffer, fill="red")
+        self.memoryArcitectureCanvas.itemconfig(self.rightBoxMemoryValue, fill="white")
+        self.memoryArcitectureCanvas.itemconfig(self.rightBoxLeftHalf, fill="red")
+        self.memoryArcitectureCanvas.itemconfig(self.cpuToLeftBoxLine, fill="red")
+        
         return
 
 
