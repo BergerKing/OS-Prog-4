@@ -403,16 +403,10 @@ class OsDemo():
     def hitMissRation(numberHit, memoryLookUpTime, numberMiss, tableLookupTime):
         return ( (numberHit/(numberHit+numberMiss) * memoryLookUpTime) + (numberMiss/(numberMiss + numberHit) * tableLookupTime) )
 
-    # need to update picture based on click
-    def paintHit(self):
-        #change color of directions to green
-
-    def paintMiss(self):
-        #change color of direction to red
 
     def runMemoryOperation(self):
         self.displayMemoryData()
-        self.detirmineHit()
+        self.determineHit()
         if( self.hit ):
             self.paintHit()
         else:
@@ -484,16 +478,20 @@ class OsDemo():
         largestFrameRow = largestFrameRow + 1
         self.newMemeryOperationButton.grid(row=largestFrameRow, column=2, columnspan=2)
 
+        self.MemoryFlag = True
+
         def determineHit(self):
             return True
 
         def paintHit(self):
             #use the lables from the objects in the canvas to change item's color
             #hits will be green
+            return
 
         def paintMiss(self):
             #use the labels from the objects in the canvas to change item's color
             #misses will be red
+            return
 
 
     ####################################################################
