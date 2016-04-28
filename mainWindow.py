@@ -138,41 +138,41 @@ class OsDemo():
 
         
         #The Canvas #################################################
-        memoryArcitectureCanvas = Canvas(self.memoryManagementPage, width=600, height=200)
-        memoryArcitectureCanvas.grid( row=6, column=1, columnspan=5, rowspan=3 )
+        self.memoryArcitectureCanvas = Canvas(self.memoryManagementPage, width=600, height=200)
+        self.memoryArcitectureCanvas.grid( row=6, column=1, columnspan=5, rowspan=3 )
 
         #cpu box and start line
-        memoryArcitectureCanvas.create_rectangle( 30, 90, 70, 110, fill="" )
-        memoryArcitectureCanvas.create_text( 50, 100, text="CPU" )
-        memoryArcitectureCanvas.create_line( 70, 100, 90, 100 )
+        self.cpuBox = self.memoryArcitectureCanvas.create_rectangle( 30, 90, 70, 110, fill="" )
+        self.cpuText = self.memoryArcitectureCanvas.create_text( 50, 100, text="CPU" )
+        self.cpuToLeftBoxLine = self.memoryArcitectureCanvas.create_line( 70, 100, 90, 100 )
 
         #left hand side double box
-        memoryArcitectureCanvas.create_rectangle( 90, 90, 130, 110, fill="" )
-        memoryArcitectureCanvas.create_rectangle( 130, 90, 170, 110, fill="" )
+        self.memoryArcitectureCanvas.create_rectangle( 90, 90, 130, 110, fill="" )
+        self.memoryArcitectureCanvas.create_rectangle( 130, 90, 170, 110, fill="" )
 
         #down pointing line to expanding table
-        memoryArcitectureCanvas.create_line( 110, 110, 200, 200 )
-        memoryArcitectureCanvas.create_line( 200, 200, 270, 100 )
+        self.memoryArcitectureCanvas.create_line( 110, 110, 200, 200 )
+        self.memoryArcitectureCanvas.create_line( 200, 200, 270, 100 )
 
 
         #lines that connect double boxes
-        memoryArcitectureCanvas.create_line( 170, 100, 270, 80 )
-        memoryArcitectureCanvas.create_line( 270, 80, 330, 90 )
+        self.memoryArcitectureCanvas.create_line( 170, 100, 270, 80 )
+        self.memoryArcitectureCanvas.create_line( 270, 80, 330, 90 )
 
         #right hand side double box
-        memoryArcitectureCanvas.create_rectangle( 270, 90, 310, 110, fill="" )
-        memoryArcitectureCanvas.create_rectangle( 310, 90, 350, 110, fill="" )
+        self.memoryArcitectureCanvas.create_rectangle( 270, 90, 310, 110, fill="" )
+        self.memoryArcitectureCanvas.create_rectangle( 310, 90, 350, 110, fill="" )
 
         #farthest right hand line segment to memory pages
-        memoryArcitectureCanvas.create_line( 350, 100, 400, 200 )
+        self.memoryArcitectureCanvas.create_line( 350, 100, 400, 200 )
 
         #left side double box
-        memoryArcitectureCanvas.create_text( 110, 100, text="CPU" )
-        memoryArcitectureCanvas.create_text( 150, 100, text="CPU" )
+        self.memoryArcitectureCanvas.create_text( 110, 100, text="val" )
+        self.memoryArcitectureCanvas.create_text( 150, 100, text="?" )
 
         #right side double box
-        memoryArcitectureCanvas.create_text( 290, 100, text="CPU" )
-        memoryArcitectureCanvas.create_text( 330, 100, text="CPU" )
+        self.memoryArcitectureCanvas.create_text( 290, 100, text="val" )
+        self.memoryArcitectureCanvas.create_text( 330, 100, text="ans" )
         # End of Canvas ##############################################
 
         largestFrameRow = 9
@@ -406,7 +406,7 @@ class OsDemo():
 
     def runMemoryOperation(self):
         self.displayMemoryData()
-        self.determineHit()
+        self.determineHit() 
         if( self.hit ):
             self.paintHit()
         else:
@@ -423,7 +423,7 @@ class OsDemo():
             for num in range(self.numberOfBufferFrames):
                 self.inRamFrameEntry[num].destroy()
             for num in range(self.numberOfMemoryPages):
-                self.inMemPageString[num].destroy()
+                self.inMemPageEntry[num].destroy()
         
         # frames in ram list
         frameRow = 9
@@ -454,8 +454,8 @@ class OsDemo():
         largestFrameRow = max(frameRow, frameRow2)
 
         # blank space to push canvas down
-        emptyLabelForSpacing93 = Label(self.memoryManagementPage, relief=FLAT)
-        emptyLabelForSpacing93.grid(row=largestFrameRow, column=0)
+        self.emptyLabelForSpacing93 = Label(self.memoryManagementPage, relief=FLAT)
+        self.emptyLabelForSpacing93.grid(row=largestFrameRow, column=0)
 
         largestFrameRow = largestFrameRow + 1
         
@@ -480,18 +480,23 @@ class OsDemo():
 
         self.MemoryFlag = True
 
-        def determineHit(self):
-            return True
+    def determineHit(self):
+        self.hit = True
+        return
 
-        def paintHit(self):
-            #use the lables from the objects in the canvas to change item's color
-            #hits will be green
-            return
+    def paintHit(self):
+        #use the lables from the objects in the canvas to change item's color
+        #hits will be green
+        self.memoryArcitectureCanvas.itemconfig(self.cpuBox, fill="green")
+        self.memoryArcitectureCanvas.itemconfig(self.cpuText, fill="white")
+        self.memoryArcitectureCanvas.tag_raise(self.cpuText)
+        self.memoryArcitectureCanvas.itemconfig(self.cpuToLeftBoxLine, fill="green")
+        return
 
-        def paintMiss(self):
-            #use the labels from the objects in the canvas to change item's color
-            #misses will be red
-            return
+    def paintMiss(self):
+        #use the labels from the objects in the canvas to change item's color
+        #misses will be red
+        return
 
 
     ####################################################################
