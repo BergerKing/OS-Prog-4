@@ -403,12 +403,20 @@ class OsDemo():
     def hitMissRation(numberHit, memoryLookUpTime, numberMiss, tableLookupTime):
         return ( (numberHit/(numberHit+numberMiss) * memoryLookUpTime) + (numberMiss/(numberMiss + numberHit) * tableLookupTime) )
 
-    # need to generate a page, and an offset
-
     # need to update picture based on click
+    def paintHit(self):
+        #change color of directions to green
+
+    def paintMiss(self):
+        #change color of direction to red
 
     def runMemoryOperation(self):
         self.displayMemoryData()
+        self.detirmineHit()
+        if( self.hit ):
+            self.paintHit()
+        else:
+            self.paintMiss()
         #do things
 
     def displayMemoryData(self):
@@ -429,6 +437,7 @@ class OsDemo():
         self.inRamframeString = []
         self.numberOfBufferFrames = int(self.numberOfFramesNumber.get())
         for num in range(self.numberOfBufferFrames):
+            #should populate at least some Frames ###########################################
             self.inRamframeString.append(StringVar())
             self.inRamFrameEntry.append(Entry(self.memoryManagementPage, textvariable = self.inRamframeString[num], bd=5 ) )
             self.inRamFrameEntry[num].grid(row=frameRow, column=2)
@@ -441,6 +450,7 @@ class OsDemo():
         self.inMemPageString = []
         self.numberOfMemoryPages = int(self.numberOfPagesNumber.get())
         for num in range(self.numberOfMemoryPages):
+            #should populate page ##################################################
             self.inMemPageString.append(StringVar())
             self.inMemPageEntry.append(Entry(self.memoryManagementPage, textvariable = self.inMemPageString[num], bd=5 ) )
             self.inMemPageEntry[num].grid(row=frameRow2, column=4)
@@ -473,6 +483,17 @@ class OsDemo():
         self.newMemeryOperationButton = ui.Button(self.memoryManagementPage, text ="Run a Memory Operation", command = self.runMemoryOperation)
         largestFrameRow = largestFrameRow + 1
         self.newMemeryOperationButton.grid(row=largestFrameRow, column=2, columnspan=2)
+
+        def determineHit(self):
+            return True
+
+        def paintHit(self):
+            #use the lables from the objects in the canvas to change item's color
+            #hits will be green
+
+        def paintMiss(self):
+            #use the labels from the objects in the canvas to change item's color
+            #misses will be red
 
 
     ####################################################################
