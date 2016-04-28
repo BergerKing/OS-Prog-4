@@ -7,6 +7,9 @@ import tkinter as ui
 
 class OsDemo():
     def __init__(self):
+
+        self.EntryFlag = False
+        self.numberOfFrame = 3
         self.demo()
 
     def demo(self):
@@ -232,6 +235,11 @@ class OsDemo():
         self.frameNumber = Entry(self.pagingPage, bd =5)
         self.frameNumber.grid(row=1, column=2)
 
+        
+        #set frame number button
+        self.frameBtn = ui.Button(self.pagingPage, text ="Set Frame Number", command = self.setNumberOfFrames)
+        self.frameBtn.grid(row=1, column=3)
+
         # reference string label
         self.referenceString = StringVar()
         self.referenceLabel = Label(self.pagingPage, textvariable=self.referenceString, relief=FLAT )
@@ -264,37 +272,15 @@ class OsDemo():
         frameRow = 10
         self.frameEntry = []
         self.frameString = []
-        for num in range(3):
+        for num in range(self.numberOfFrame):
             self.frameString.append(StringVar())
             self.frameEntry.append(Entry(self.pagingPage, textvariable = self.frameString[num], bd=5 ) )
             self.frameEntry[num].grid(row=frameRow, column=2)
             self.setFrames()
             frameRow = frameRow + 1
             
-
-        # page faults label
-        self.faultString = StringVar()
-        self.faultLabel = Label(self.pagingPage, textvariable=self.faultString, relief=FLAT )
-
-        self.faultString.set("Page Fault")
-        frameRow = frameRow + 1
-        self.faultLabel.grid(row=frameRow, column=1)
-
-        #Entry for frame number
-        self.faultEntry = Entry(self.pagingPage, bd =5)
-        frameRow = frameRow + 1
-        self.faultEntry.grid(row=frameRow, column=2)
-
-        #page start button
-        self.pageBtn = ui.Button(self.pagingPage, text ="Start", command = self.pageCallBack)
-        frameRow = frameRow + 1
-        self.pageBtn.grid(row=frameRow, column=2)
-
-        self.pushBtn = ui.Button(self.pagingPage, text ="Push", command = self.Optimal)
-        self.pushBtn.grid(row=frameRow, column=3)
         
         
-
         self.notebook.add(self.processSchedualerPage, text='Process Schedualer')
         self.notebook.add(self.memoryManagementPage, text='Memory Management')
         self.notebook.add(self.pagingPage, text='Page Replacement')
@@ -302,6 +288,7 @@ class OsDemo():
         self.notebook.grid(row=5, column=1)
 
         self.root.mainloop()
+        
 
     def processCallBack(self):
         
@@ -430,6 +417,55 @@ class OsDemo():
     #End of second page ################################################
 
     #THRID PAGE OF FUNCTIONS
+    def setNumberOfFrames(self):
+
+        if (self.EntryFlag == True):
+            self.faultLabel.grid_forget()
+            self.faultEntry.grid_forget()
+            self.pageBtn.grid_forget()
+            self.pushBtn.grid_forget()
+            frameRow = 10
+            for num in range(self.numberOfFrame):
+                self.frameEntry[num].destroy()
+
+        self.numberOfFrame = int(self.frameNumber.get())
+
+
+        # frames
+        frameRow = 10
+        self.frameEntry = []
+        self.frameString = []
+        for num in range(self.numberOfFrame):
+            self.frameString.append(StringVar())
+            self.frameEntry.append(Entry(self.pagingPage, textvariable = self.frameString[num], bd=5 ) )
+            self.frameEntry[num].grid(row=frameRow, column=2)
+            self.setFrames()
+            frameRow = frameRow + 1
+            
+
+        # page faults label
+        self.faultString = StringVar()
+        self.faultLabel = Label(self.pagingPage, textvariable=self.faultString, relief=FLAT )
+
+        self.faultString.set("Page Fault")
+        frameRow = frameRow + 1
+        self.faultLabel.grid(row=frameRow, column=1)
+
+        #Entry for fault number
+        self.faultEntry = Entry(self.pagingPage, bd =5)
+        frameRow = frameRow + 1
+        self.faultEntry.grid(row=frameRow, column=2)
+
+        #page start button
+        self.pageBtn = ui.Button(self.pagingPage, text ="Generate Reference String", command = self.pageCallBack)
+        frameRow = frameRow + 1
+        self.pageBtn.grid(row=frameRow, column=2)
+
+        self.pushBtn = ui.Button(self.pagingPage, text ="Run Algorithm", command = self.Optimal)
+        self.pushBtn.grid(row=frameRow, column=3)
+
+        self.EntryFlag = True
+    
     def pageCallBack(self):
         self.generateRefString()
 
@@ -460,7 +496,7 @@ class OsDemo():
                     
             if (flag == False):
                 faultCount += 1
-                for val in range(3):
+                for val in range(numberOfFrame):
                         
                     if (val != 0):
                         frame = self.frameEntry[val].get()
@@ -499,7 +535,7 @@ class OsDemo():
                 maxDist = 0
                 found = -1
                 faultCount += 1
-                for val in range(3):
+                for val in range(self.numberOfFrame):
 
                     found = -1
                     frame = self.frameEntry[val].get()
@@ -555,7 +591,7 @@ class OsDemo():
                 maxDist = 0
                 found = -1
                 faultCount += 1
-                for val in range(3):
+                for val in range(self.numberOfFrame):
                     
                     frame = self.frameEntry[val].get()
                     dist = 0
@@ -603,7 +639,7 @@ class OsDemo():
                 found = -1
                 faultCount += 1
                 refCount[int(index)] += 1
-                for val in range(3):
+                for val in range(self.numberOfFrame):
                     
                     frame = self.frameEntry[val].get()
                     if (refCount[int(frame)] < leastRefCount):
@@ -645,7 +681,7 @@ class OsDemo():
             if (flag == False):
                 found = -1
                 faultCount += 1
-                for val in range(3):
+                for val in range(self.numberOfFrame):
 
                     found = -1
                     frame = self.frameEntry[val].get()
