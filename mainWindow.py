@@ -7,9 +7,6 @@ import tkinter as ui
 
 class OsDemo():
     def __init__(self):
-
-        self.EntryFlag = False
-        self.numberOfFrame = 3
         self.demo()
 
     def demo(self):
@@ -122,7 +119,7 @@ class OsDemo():
         self.numberOfFramesNumber = Entry(self.memoryManagementPage, bd =5)
         self.numberOfFramesNumber.grid(row=2, column=5 )
 
-
+    
         # blank space to push canvas down
         emptyLabelForSpacing1 = Label(self.memoryManagementPage, relief=FLAT)
         emptyLabelForSpacing1.grid(row=3, column=0)
@@ -170,7 +167,9 @@ class OsDemo():
         memoryArcitectureCanvas.create_text( 330, 100, text="CPU" )
         # End of Canvas ##############################################
 
+        largestFrameRow = 9
 
+        """
         # frames in ram list
         frameRow = 9
         self.inRamFrameEntry = []
@@ -183,15 +182,45 @@ class OsDemo():
             frameRow = frameRow + 1
 
         # Pages in memory list
-        frameRow = 9
+        frameRow2 = 9
         self.inMemPageEntry = []
         self.inMemPageString = []
         for num in range(3):
             self.inMemPageString.append(StringVar())
             self.inMemPageEntry.append(Entry(self.memoryManagementPage, textvariable = self.inMemPageString[num], bd=5 ) )
-            self.inMemPageEntry[num].grid(row=frameRow, column=4)
+            self.inMemPageEntry[num].grid(row=frameRow2, column=4)
             self.setInMemPages()
-            frameRow = frameRow + 1
+            frameRow2 = frameRow2 + 1
+
+        largestFrameRow = max(frameRow, frameRow2)
+
+        # blank space to push canvas down
+        emptyLabelForSpacing1 = Label(self.memoryManagementPage, relief=FLAT)
+        emptyLabelForSpacing1.grid(row=largestFrameRow, column=0)
+
+        largestFrameRow = largestFrameRow + 1
+        
+        # effective memory access time due to TLB hits/misses
+        self.effectiveMemoryTimeString = StringVar()
+        self.effectiveMemoryTime = Label(self.memoryManagementPage, textvariable=self.effectiveMemoryTimeString, relief=FLAT )
+
+        self.effectiveMemoryTimeString.set("Effective memory access time due to TLB hits/misses: ")
+        self.effectiveMemoryTime.grid(row=largestFrameRow, column=1, columnspan=2)
+
+
+        #user Entry for number of frames
+        self.numberOfFramesNumber = Entry(self.memoryManagementPage, bd =5)
+        self.numberOfFramesNumber.grid(row=largestFrameRow, column=3 )
+        """
+
+
+        #page start button
+        self.newMemeryOperationButton = ui.Button(self.memoryManagementPage, text ="Run a Memory Operation", command = self.runMemoryOperation)
+        largestFrameRow = largestFrameRow + 1
+        self.newMemeryOperationButton.grid(row=largestFrameRow, column=2, columnspan=2)
+
+        #self.newMemeryOperationButton = ui.Button(self.memoryManagementPage, text ="Push", command = self.Optimal)
+        #self.newMemeryOperationButton.grid(row=largestFrameRow, column=3)
 
         ###################################################################################
         # end of second page ##############################################################
@@ -235,11 +264,6 @@ class OsDemo():
         self.frameNumber = Entry(self.pagingPage, bd =5)
         self.frameNumber.grid(row=1, column=2)
 
-        
-        #set frame number button
-        self.frameBtn = ui.Button(self.pagingPage, text ="Set Frame Number", command = self.setNumberOfFrames)
-        self.frameBtn.grid(row=1, column=3)
-
         # reference string label
         self.referenceString = StringVar()
         self.referenceLabel = Label(self.pagingPage, textvariable=self.referenceString, relief=FLAT )
@@ -272,15 +296,37 @@ class OsDemo():
         frameRow = 10
         self.frameEntry = []
         self.frameString = []
-        for num in range(self.numberOfFrame):
+        for num in range(3):
             self.frameString.append(StringVar())
             self.frameEntry.append(Entry(self.pagingPage, textvariable = self.frameString[num], bd=5 ) )
             self.frameEntry[num].grid(row=frameRow, column=2)
             self.setFrames()
             frameRow = frameRow + 1
             
+
+        # page faults label
+        self.faultString = StringVar()
+        self.faultLabel = Label(self.pagingPage, textvariable=self.faultString, relief=FLAT )
+
+        self.faultString.set("Page Fault")
+        frameRow = frameRow + 1
+        self.faultLabel.grid(row=frameRow, column=1)
+
+        #Entry for frame number
+        self.faultEntry = Entry(self.pagingPage, bd =5)
+        frameRow = frameRow + 1
+        self.faultEntry.grid(row=frameRow, column=2)
+
+        #page start button
+        self.pageBtn = ui.Button(self.pagingPage, text ="Start", command = self.pageCallBack)
+        frameRow = frameRow + 1
+        self.pageBtn.grid(row=frameRow, column=2)
+
+        self.pushBtn = ui.Button(self.pagingPage, text ="Push", command = self.Optimal)
+        self.pushBtn.grid(row=frameRow, column=3)
         
         
+
         self.notebook.add(self.processSchedualerPage, text='Process Schedualer')
         self.notebook.add(self.memoryManagementPage, text='Memory Management')
         self.notebook.add(self.pagingPage, text='Page Replacement')
@@ -288,7 +334,6 @@ class OsDemo():
         self.notebook.grid(row=5, column=1)
 
         self.root.mainloop()
-        
 
     def processCallBack(self):
         
@@ -393,7 +438,9 @@ class OsDemo():
         self.processChart.insert(INSERT, processOrder + "\n")
         self.processChart.insert(INSERT, processTime + "\n")
 
+    ####################################################################
     #Second Page Functions #############################################
+    ####################################################################
 
     def setInRamFrames(self):
         for index in self.inRamFrameEntry:
@@ -401,71 +448,77 @@ class OsDemo():
             index.insert(0, "N/A")
 
     def setInMemPages(self):
+        counter = 0
         for index in self.inMemPageEntry:
             index.delete(0, END)
             index.insert(0, "N/A")
 
     # Calculate hit miss ration
-    def hitMisRation(numberHit, memoryLookUpTime, numberMiss, tableLookupTime):
+    def hitMissRation(numberHit, memoryLookUpTime, numberMiss, tableLookupTime):
         return ( (numberHit/(numberHit+numberMiss) * memoryLookUpTime) + (numberMiss/(numberMiss + numberHit) * tableLookupTime) )
 
     # need to generate a page, and an offset
 
     # need to update picture based on click
 
+    def runMemoryOperation(self):
+        self.displayMemoryData()
+        #do things
 
-    #End of second page ################################################
-
-    #THRID PAGE OF FUNCTIONS
-    def setNumberOfFrames(self):
-
-        if (self.EntryFlag == True):
-            self.faultLabel.grid_forget()
-            self.faultEntry.grid_forget()
-            self.pageBtn.grid_forget()
-            self.pushBtn.grid_forget()
-            frameRow = 10
-            for num in range(self.numberOfFrame):
-                self.frameEntry[num].destroy()
-
-        self.numberOfFrame = int(self.frameNumber.get())
-
-
-        # frames
-        frameRow = 10
-        self.frameEntry = []
-        self.frameString = []
-        for num in range(self.numberOfFrame):
-            self.frameString.append(StringVar())
-            self.frameEntry.append(Entry(self.pagingPage, textvariable = self.frameString[num], bd=5 ) )
-            self.frameEntry[num].grid(row=frameRow, column=2)
-            self.setFrames()
+    def displayMemoryData(self):
+        # frames in ram list
+        frameRow = 9
+        self.inRamFrameEntry = []
+        self.inRamframeString = []
+        for num in range(int(self.numberOfFramesNumber.get())):
+            self.inRamframeString.append(StringVar())
+            self.inRamFrameEntry.append(Entry(self.memoryManagementPage, textvariable = self.inRamframeString[num], bd=5 ) )
+            self.inRamFrameEntry[num].grid(row=frameRow, column=2)
+            self.setInRamFrames()
             frameRow = frameRow + 1
-            
 
-        # page faults label
-        self.faultString = StringVar()
-        self.faultLabel = Label(self.pagingPage, textvariable=self.faultString, relief=FLAT )
+        # Pages in memory list
+        frameRow2 = 9
+        self.inMemPageEntry = []
+        self.inMemPageString = []
+        for num in range(int(self.numberOfPagesNumber.get())):
+            self.inMemPageString.append(StringVar())
+            self.inMemPageEntry.append(Entry(self.memoryManagementPage, textvariable = self.inMemPageString[num], bd=5 ) )
+            self.inMemPageEntry[num].grid(row=frameRow2, column=4)
+            self.setInMemPages()
+            frameRow2 = frameRow2 + 1
 
-        self.faultString.set("Page Fault")
-        frameRow = frameRow + 1
-        self.faultLabel.grid(row=frameRow, column=1)
+        largestFrameRow = max(frameRow, frameRow2)
 
-        #Entry for fault number
-        self.faultEntry = Entry(self.pagingPage, bd =5)
-        frameRow = frameRow + 1
-        self.faultEntry.grid(row=frameRow, column=2)
+        # blank space to push canvas down
+        emptyLabelForSpacing1 = Label(self.memoryManagementPage, relief=FLAT)
+        emptyLabelForSpacing1.grid(row=largestFrameRow, column=0)
+
+        largestFrameRow = largestFrameRow + 1
+        
+        # effective memory access time due to TLB hits/misses
+        self.effectiveMemoryTimeString = StringVar()
+        self.effectiveMemoryTime = Label(self.memoryManagementPage, textvariable=self.effectiveMemoryTimeString, relief=FLAT )
+
+        self.effectiveMemoryTimeString.set("Effective memory access time due to TLB hits/misses: ")
+        self.effectiveMemoryTime.grid(row=largestFrameRow, column=1, columnspan=2)
+
+
+        #user Entry for number of frames
+        self.numberOfFramesNumber = Entry(self.memoryManagementPage, bd =5)
+        self.numberOfFramesNumber.grid(row=largestFrameRow, column=3 )
 
         #page start button
-        self.pageBtn = ui.Button(self.pagingPage, text ="Generate Reference String", command = self.pageCallBack)
-        frameRow = frameRow + 1
-        self.pageBtn.grid(row=frameRow, column=2)
+        self.newMemeryOperationButton = ui.Button(self.memoryManagementPage, text ="Run a Memory Operation", command = self.runMemoryOperation)
+        largestFrameRow = largestFrameRow + 1
+        self.newMemeryOperationButton.grid(row=largestFrameRow, column=2, columnspan=2)
 
-        self.pushBtn = ui.Button(self.pagingPage, text ="Run Algorithm", command = self.Optimal)
-        self.pushBtn.grid(row=frameRow, column=3)
 
-        self.EntryFlag = True
-    
+    ####################################################################
+    #End of second page ################################################
+    ####################################################################
+
+    #THRID PAGE OF FUNCTIONS
     def pageCallBack(self):
         self.generateRefString()
 
@@ -496,7 +549,7 @@ class OsDemo():
                     
             if (flag == False):
                 faultCount += 1
-                for val in range(numberOfFrame):
+                for val in range(3):
                         
                     if (val != 0):
                         frame = self.frameEntry[val].get()
@@ -535,7 +588,7 @@ class OsDemo():
                 maxDist = 0
                 found = -1
                 faultCount += 1
-                for val in range(self.numberOfFrame):
+                for val in range(3):
 
                     found = -1
                     frame = self.frameEntry[val].get()
@@ -591,7 +644,7 @@ class OsDemo():
                 maxDist = 0
                 found = -1
                 faultCount += 1
-                for val in range(self.numberOfFrame):
+                for val in range(3):
                     
                     frame = self.frameEntry[val].get()
                     dist = 0
@@ -639,7 +692,7 @@ class OsDemo():
                 found = -1
                 faultCount += 1
                 refCount[int(index)] += 1
-                for val in range(self.numberOfFrame):
+                for val in range(3):
                     
                     frame = self.frameEntry[val].get()
                     if (refCount[int(frame)] < leastRefCount):
@@ -681,7 +734,7 @@ class OsDemo():
             if (flag == False):
                 found = -1
                 faultCount += 1
-                for val in range(self.numberOfFrame):
+                for val in range(3):
 
                     found = -1
                     frame = self.frameEntry[val].get()
