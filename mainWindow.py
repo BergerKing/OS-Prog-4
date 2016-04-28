@@ -10,6 +10,11 @@ class OsDemo():
 
         self.EntryFlag = False
         self.numberOfFrame = 3
+
+        self.numberOfBufferFrames = 0
+        self.numberOfMemoryPages  = 0
+        self.MemoryFlag = False
+        
         self.demo()
 
     def demo(self):
@@ -114,7 +119,7 @@ class OsDemo():
         self.numberOfFramesString = StringVar()
         self.numberOfFrames = Label(self.memoryManagementPage, textvariable=self.numberOfFramesString, relief=FLAT )
 
-        self.numberOfFramesString.set("Number of Pages: ")
+        self.numberOfFramesString.set("Number of Frames: ")
         self.numberOfFrames.grid(row=2, column=4)
 
 
@@ -171,50 +176,6 @@ class OsDemo():
         # End of Canvas ##############################################
 
         largestFrameRow = 9
-
-        """
-        # frames in ram list
-        frameRow = 9
-        self.inRamFrameEntry = []
-        self.inRamframeString = []
-        for num in range(3):
-            self.inRamframeString.append(StringVar())
-            self.inRamFrameEntry.append(Entry(self.memoryManagementPage, textvariable = self.inRamframeString[num], bd=5 ) )
-            self.inRamFrameEntry[num].grid(row=frameRow, column=2)
-            self.setInRamFrames()
-            frameRow = frameRow + 1
-
-        # Pages in memory list
-        frameRow2 = 9
-        self.inMemPageEntry = []
-        self.inMemPageString = []
-        for num in range(3):
-            self.inMemPageString.append(StringVar())
-            self.inMemPageEntry.append(Entry(self.memoryManagementPage, textvariable = self.inMemPageString[num], bd=5 ) )
-            self.inMemPageEntry[num].grid(row=frameRow2, column=4)
-            self.setInMemPages()
-            frameRow2 = frameRow2 + 1
-
-        largestFrameRow = max(frameRow, frameRow2)
-
-        # blank space to push canvas down
-        emptyLabelForSpacing1 = Label(self.memoryManagementPage, relief=FLAT)
-        emptyLabelForSpacing1.grid(row=largestFrameRow, column=0)
-
-        largestFrameRow = largestFrameRow + 1
-        
-        # effective memory access time due to TLB hits/misses
-        self.effectiveMemoryTimeString = StringVar()
-        self.effectiveMemoryTime = Label(self.memoryManagementPage, textvariable=self.effectiveMemoryTimeString, relief=FLAT )
-
-        self.effectiveMemoryTimeString.set("Effective memory access time due to TLB hits/misses: ")
-        self.effectiveMemoryTime.grid(row=largestFrameRow, column=1, columnspan=2)
-
-
-        #user Entry for number of frames
-        self.numberOfFramesNumber = Entry(self.memoryManagementPage, bd =5)
-        self.numberOfFramesNumber.grid(row=largestFrameRow, column=3 )
-        """
 
 
         #page start button
@@ -451,11 +412,23 @@ class OsDemo():
         #do things
 
     def displayMemoryData(self):
+
+        if(self.MemoryFlag == True):
+            self.displayMemAccTimeNumber.grid_forget()
+            self.effectiveMemoryTime.grid_forget()
+            self.emptyLabelForSpacing93.grid_forget()
+            frameRow = 10
+            for num in range(self.numberOfBufferFrames):
+                self.inRamFrameEntry[num].destroy()
+            for num in range(self.numberOfMemoryPages):
+                self.inMemPageString[num].destroy()
+        
         # frames in ram list
         frameRow = 9
         self.inRamFrameEntry = []
         self.inRamframeString = []
-        for num in range(int(self.numberOfFramesNumber.get())):
+        self.numberOfBufferFrames = int(self.numberOfFramesNumber.get())
+        for num in range(self.numberOfBufferFrames):
             self.inRamframeString.append(StringVar())
             self.inRamFrameEntry.append(Entry(self.memoryManagementPage, textvariable = self.inRamframeString[num], bd=5 ) )
             self.inRamFrameEntry[num].grid(row=frameRow, column=2)
@@ -466,7 +439,8 @@ class OsDemo():
         frameRow2 = 9
         self.inMemPageEntry = []
         self.inMemPageString = []
-        for num in range(int(self.numberOfPagesNumber.get())):
+        self.numberOfMemoryPages = int(self.numberOfPagesNumber.get())
+        for num in range(self.numberOfMemoryPages):
             self.inMemPageString.append(StringVar())
             self.inMemPageEntry.append(Entry(self.memoryManagementPage, textvariable = self.inMemPageString[num], bd=5 ) )
             self.inMemPageEntry[num].grid(row=frameRow2, column=4)
@@ -476,8 +450,8 @@ class OsDemo():
         largestFrameRow = max(frameRow, frameRow2)
 
         # blank space to push canvas down
-        emptyLabelForSpacing1 = Label(self.memoryManagementPage, relief=FLAT)
-        emptyLabelForSpacing1.grid(row=largestFrameRow, column=0)
+        emptyLabelForSpacing93 = Label(self.memoryManagementPage, relief=FLAT)
+        emptyLabelForSpacing93.grid(row=largestFrameRow, column=0)
 
         largestFrameRow = largestFrameRow + 1
         
@@ -489,11 +463,13 @@ class OsDemo():
         self.effectiveMemoryTime.grid(row=largestFrameRow, column=1, columnspan=2)
 
 
-        #user Entry for number of frames
-        self.numberOfFramesNumber = Entry(self.memoryManagementPage, bd =5)
-        self.numberOfFramesNumber.grid(row=largestFrameRow, column=3 )
+        #Dispaly for memory access time due to TLB hits/misses
+        self.displayMemAccTimeNumber = Entry(self.memoryManagementPage, bd =5)
+        self.displayMemAccTimeNumber.grid(row=largestFrameRow, column=3 )
 
         #page start button
+        if( largestFrameRow > 0 ):
+            self.newMemeryOperationButton.grid_forget()
         self.newMemeryOperationButton = ui.Button(self.memoryManagementPage, text ="Run a Memory Operation", command = self.runMemoryOperation)
         largestFrameRow = largestFrameRow + 1
         self.newMemeryOperationButton.grid(row=largestFrameRow, column=2, columnspan=2)
