@@ -152,7 +152,7 @@ class OsDemo():
 
         #left hand side double box
         self.leftBoxLeftHalf = self.memoryArcitectureCanvas.create_rectangle( 90, 90, 130, 110, fill="" )
-        self.memoryArcitectureCanvas.create_rectangle( 130, 90, 170, 110, fill="" )
+        self.leftBoxRightHalf = self.memoryArcitectureCanvas.create_rectangle( 130, 90, 170, 110, fill="" )
 
         #down pointing line to expanding table
         self.leftBoxLineToBuffer = self.memoryArcitectureCanvas.create_line( 110, 110, 200, 200 )
@@ -165,16 +165,16 @@ class OsDemo():
 
         #right hand side double box
         self.rightBoxLeftHalf = self.memoryArcitectureCanvas.create_rectangle( 270, 90, 310, 110, fill="" )
-        self.memoryArcitectureCanvas.create_rectangle( 310, 90, 350, 110, fill="" )
+        self.rightBoxRightHalf = self.memoryArcitectureCanvas.create_rectangle( 310, 90, 350, 110, fill="" )
 
         #farthest right hand line segment to memory pages
         self.memoryArcitectureCanvas.create_line( 350, 100, 400, 200 )
 
-        #left side double box
+        #left side double box inner values
         self.leftBoxMemoryValue = self.memoryArcitectureCanvas.create_text( 110, 100, text="val" )
         self.leftBoxDiskValue = self.memoryArcitectureCanvas.create_text( 150, 100, text="?" )
 
-        #right side double box
+        #right side double box inner values
         self.rightBoxMemoryValue = self.memoryArcitectureCanvas.create_text( 290, 100, text="val" )
         self.rightBoxDiskValue = self.memoryArcitectureCanvas.create_text( 330, 100, text="ans" )
         # End of Canvas ##############################################
@@ -187,6 +187,7 @@ class OsDemo():
         largestFrameRow = largestFrameRow + 1
         self.newMemeryOperationButton.grid(row=largestFrameRow, column=2, columnspan=2)
 
+        #Page Reset Button
         self.resetCountersButton = ui.Button(self.memoryManagementPage, text ="Reset Counters", command = self.resetSpeeds)
         self.resetCountersButton.grid(row=largestFrameRow, column=4, columnspan=2)
 
@@ -442,10 +443,17 @@ class OsDemo():
 
     def displayMemoryData(self):
 
+        #reset positions for changing table size
         if(self.MemoryFlag == True):
             self.displayMemAccTimeNumber.grid_forget()
             self.effectiveMemoryTime.grid_forget()
             self.emptyLabelForSpacing93.grid_forget()
+            """
+            self.hitsLabel.grid_forget()
+            self.missLabel.grid_forget()
+            self.hitsNumber.grid_forget()
+            self.missNumber.grid_forget()
+            """
             frameRow = 10
             for num in range(self.numberOfBufferFrames):
                 self.inRamFrameEntry[num].destroy()
@@ -504,6 +512,43 @@ class OsDemo():
         self.displayMemAccTimeNumber = Entry(self.memoryManagementPage, bd =5)
         self.displayMemAccTimeNumber.grid(row=largestFrameRow, column=3 )
 
+        
+        largestFrameRow = largestFrameRow + 1
+        
+
+        """
+        # display hit counter
+        self.hitsString = StringVar()
+        self.hitsLabel = Label(self.memoryManagementPage, textvariable=self.hitsString, relief=FLAT )
+
+        self.hitsString.set("hits: ")
+        self.effectiveMemoryTime.grid(row=largestFrameRow, column=3,)
+
+
+        # display hit value
+        self.hitsNumberString = StringVar()
+        self.hitsNumber = Label(self.memoryManagementPage, textvariable=self.hitsNumberString, relief=FLAT )
+        self.hitsString.set(str(self.hitCounter))
+        self.hitsNumber.grid(row=largestFrameRow, column=4 )
+
+        # display miss counter
+        self.missString = StringVar()
+        self.missLabel = Label(self.memoryManagementPage, textvariable=self.missString, relief=FLAT )
+
+        self.missString.set("misses: ")
+        self.effectiveMemoryTime.grid(row=largestFrameRow, column=5,)
+
+
+        # display miss value
+        self.missNumberString = StringVar()
+        self.missNumber = Label(self.memoryManagementPage, textvariable=self.hitsNumberString, relief=FLAT )
+        self.missString.set(str(self.missCounter))
+        self.missNumber.grid(row=largestFrameRow, column=6 )
+        """
+
+
+        
+
         #page start button
         if( largestFrameRow > 0 ):
             self.newMemeryOperationButton.grid_forget()
@@ -543,7 +588,7 @@ class OsDemo():
         if ( position != -1 ):
             #change color of box at position
             self.memoryArcitectureCanvas.itemconfig(self.inRamFrameEntry[position], fill="green")
-            self.actualMemoryString = str(self.actualMemoryPosition[self.logicalMemoryPosition.index(self.newAddress)])
+            self.actualMemoryString = str(self.actualMemoryPosition[position])
             self.hit = True
         else:
             #change color of page table box
@@ -564,21 +609,27 @@ class OsDemo():
         self.memoryArcitectureCanvas.itemconfig(self.cpuBox, fill="green")
         self.memoryArcitectureCanvas.itemconfig(self.cpuText, fill="white")
         self.memoryArcitectureCanvas.tag_raise(self.cpuText)
-        self.memoryArcitectureCanvas.itemconfig(self.cpuToLeftBoxLine, fill="green")
+        self.memoryArcitectureCanvas.itemconfig(self.cpuToLeftBoxLine, fill="blue")
         
         self.memoryArcitectureCanvas.itemconfig(self.leftBoxLeftHalf, fill="green")
         self.memoryArcitectureCanvas.itemconfig(self.leftBoxMemoryValue, fill="white")
         self.memoryArcitectureCanvas.itemconfig(self.leftBoxLineToBuffer, fill="green")
-        self.memoryArcitectureCanvas.itemconfig(self.cpuToLeftBoxLine, fill="green")
+        self.memoryArcitectureCanvas.itemconfig(self.leftBoxLineToBuffer, fill="blue")
 
         self.memoryArcitectureCanvas.itemconfig(self.rightBoxLineToBuffer, fill="green")
 
         self.memoryArcitectureCanvas.itemconfig(self.rightBoxMemoryValue, fill="black")
         self.memoryArcitectureCanvas.itemconfig(self.rightBoxLeftHalf, fill="")
-        self.memoryArcitectureCanvas.itemconfig(self.rightBoxDiskValue, text="ans")
+        self.memoryArcitectureCanvas.itemconfig(self.rightBoxDiskValue, text="ans", fill="black")
+
+        self.memoryArcitectureCanvas.itemconfig(self.topLineLeft, fill="black")
+        self.memoryArcitectureCanvas.itemconfig(self.topLineRight, fill="black")
 
         #set on disk values
-        self.memoryArcitectureCanvas.itemconfig(self.leftBoxDiskValue, text=(self.actualMemoryString + self.offsetString))
+        self.memoryArcitectureCanvas.itemconfig(self.leftBoxDiskValue, text=(self.actualMemoryString + self.offsetString), fill="black")
+
+        self.memoryArcitectureCanvas.itemconfig(self.leftBoxRightHalf, fill="")
+        self.memoryArcitectureCanvas.itemconfig(self.rightBoxRightHalf, fill="")
         
         return
 
@@ -591,24 +642,27 @@ class OsDemo():
         self.memoryArcitectureCanvas.itemconfig(self.cpuToLeftBoxLine, fill="red")
         
         self.memoryArcitectureCanvas.itemconfig(self.leftBoxLeftHalf, fill="red")
-        self.memoryArcitectureCanvas.itemconfig(self.leftBoxMemoryValue, text = self.offsetString , fill="white")
+        self.memoryArcitectureCanvas.itemconfig(self.leftBoxMemoryValue, text = (str(self.newAddress) + self.offsetString) , fill="white")
         self.memoryArcitectureCanvas.itemconfig(self.leftBoxLineToBuffer, fill="red")
         self.memoryArcitectureCanvas.itemconfig(self.cpuToLeftBoxLine, fill="red")
 
         self.memoryArcitectureCanvas.itemconfig(self.rightBoxLineToBuffer, fill="red")
-        self.memoryArcitectureCanvas.itemconfig(self.rightBoxMemoryValue, fill="white")
+        self.memoryArcitectureCanvas.itemconfig(self.rightBoxMemoryValue, text = (str(self.newAddress) + self.offsetString), fill="white")
         self.memoryArcitectureCanvas.itemconfig(self.rightBoxLeftHalf, fill="red")
         self.memoryArcitectureCanvas.itemconfig(self.cpuToLeftBoxLine, fill="red")
 
 
         #set on disk values
-        self.memoryArcitectureCanvas.itemconfig(self.rightBoxDiskValue, text=(self.actualMemoryString + self.offsetString))
+        self.memoryArcitectureCanvas.itemconfig(self.rightBoxDiskValue, text=(self.actualMemoryString + self.offsetString), fill="white")
 
-        self.memoryArcitectureCanvas.itemconfig(self.topLineLeft, fill="green")
-        self.memoryArcitectureCanvas.itemconfig(self.topLineRight, fill="green")
+        self.memoryArcitectureCanvas.itemconfig(self.topLineLeft, fill="blue")
+        self.memoryArcitectureCanvas.itemconfig(self.topLineRight, fill="blue")
 
         #set on disk values
-        self.memoryArcitectureCanvas.itemconfig(self.leftBoxDiskValue, text=(self.actualMemoryString + self.offsetString))
+        self.memoryArcitectureCanvas.itemconfig(self.leftBoxDiskValue, text=(self.actualMemoryString + self.offsetString), fill="white")
+
+        self.memoryArcitectureCanvas.itemconfig(self.leftBoxRightHalf, fill="green")
+        self.memoryArcitectureCanvas.itemconfig(self.rightBoxRightHalf, fill="green")
         
         return
 
