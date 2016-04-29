@@ -187,8 +187,8 @@ class OsDemo():
         largestFrameRow = largestFrameRow + 1
         self.newMemeryOperationButton.grid(row=largestFrameRow, column=2, columnspan=2)
 
-        #self.newMemeryOperationButton = ui.Button(self.memoryManagementPage, text ="Push", command = self.Optimal)
-        #self.newMemeryOperationButton.grid(row=largestFrameRow, column=3)
+        self.resetCountersButton = ui.Button(self.memoryManagementPage, text ="Reset Counters", command = self.resetSpeeds)
+        self.resetCountersButton.grid(row=largestFrameRow, column=4, columnspan=2)
 
         ###################################################################################
         # end of second page ##############################################################
@@ -393,15 +393,29 @@ class OsDemo():
     ####################################################################
 
     def setInRamFrames(self):
+        counter = 0
         for index in self.inRamFrameEntry:
             index.delete(0, END)
-            index.insert(0, "N/A")
+            if( counter < len(self.logicalMemoryPosition)):
+                index.insert(0, \
+                    str(self.logicalMemoryPosition[counter]) \
+                    + " / " + str(self.actualMemoryPosition[counter]))
+                counter = counter + 1
+            else:
+                index.insert(0, "N/A")
 
     def setInMemPages(self):
         counter = 0
+        maxRand = 0
+        self.logicalMemoryPosition = []
+        self.actualMemoryPosition = []
         for index in self.inMemPageEntry:
             index.delete(0, END)
-            index.insert(0, "N/A")
+            maxRand = randint(maxRand + 1, maxRand + 6)
+            self.logicalMemoryPosition.append(counter)
+            self.actualMemoryPosition.append(maxRand)
+            index.insert(0, str(counter) + "  /  " + str(maxRand))
+            counter = counter + 1
 
     # Calculate hit miss ration
     def hitMissRatio(self, numberHit, memoryLookUpTime, numberMiss, tableLookupTime):
@@ -435,6 +449,24 @@ class OsDemo():
                 self.inRamFrameEntry[num].destroy()
             for num in range(self.numberOfMemoryPages):
                 self.inMemPageEntry[num].destroy()
+
+
+        #############
+        # the buffer uses values from the page table, thus pages need to be first!!!!
+        #############
+        # Pages in memory list
+        frameRow2 = 9
+        self.inMemPageEntry = []
+        self.inMemPageString = []
+        self.numberOfMemoryPages = min(int(self.numberOfPagesNumber.get()), 10)
+        for num in range(self.numberOfMemoryPages):
+            #should populate page ##################################################
+            self.inMemPageString.append(StringVar())
+            self.inMemPageEntry.append(Entry(self.memoryManagementPage, textvariable = self.inMemPageString[num], bd=5 ) )
+            self.inMemPageEntry[num].grid(row=frameRow2, column=4)
+            self.setInMemPages()
+            frameRow2 = frameRow2 + 1
+
         
         # frames in ram list
         frameRow = 9
@@ -449,19 +481,7 @@ class OsDemo():
             self.setInRamFrames()
             frameRow = frameRow + 1
 
-        # Pages in memory list
-        frameRow2 = 9
-        self.inMemPageEntry = []
-        self.inMemPageString = []
-        self.numberOfMemoryPages = min(int(self.numberOfPagesNumber.get()), 10)
-        for num in range(self.numberOfMemoryPages):
-            #should populate page ##################################################
-            self.inMemPageString.append(StringVar())
-            self.inMemPageEntry.append(Entry(self.memoryManagementPage, textvariable = self.inMemPageString[num], bd=5 ) )
-            self.inMemPageEntry[num].grid(row=frameRow2, column=4)
-            self.setInMemPages()
-            frameRow2 = frameRow2 + 1
-
+        
         largestFrameRow = max(frameRow, frameRow2)
 
         # blank space to push canvas down
@@ -485,7 +505,7 @@ class OsDemo():
         #page start button
         if( largestFrameRow > 0 ):
             self.newMemeryOperationButton.grid_forget()
-            #self.resetCountersButton.grid_forget()
+            self.resetCountersButton.grid_forget()
             
         self.newMemeryOperationButton = ui.Button(self.memoryManagementPage, text ="Run a Memory Operation", command = self.runMemoryOperation)
         largestFrameRow = largestFrameRow + 1
@@ -500,6 +520,19 @@ class OsDemo():
     def determineHit(self):
         #loop though frame buffer, if address not there return false
         self.hit = False
+
+        self.newAddress = randint(0, len(self.logicalMemoryPosition))
+
+        
+        self.offsetList = []
+        self.offsetString = ""
+        for index in range(11):
+            self.offsetList.append(randint(0, 9))
+        for index in self.offsetList:
+            self.offsetString = self.offsetString + " " + str(index)
+
+
+
 
         if (self.hit):
             self.hitCounter = self.hitCounter + 1
