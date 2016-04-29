@@ -82,7 +82,7 @@ class OsDemo():
         self.lookUpTimeString = StringVar()
         self.lookUpTime = Label(self.memoryManagementPage, textvariable=self.lookUpTimeString, relief=FLAT )
 
-        self.lookUpTimeString.set("Tab Lookup Time: ")
+        self.lookUpTimeString.set("Table Lookup Time: ")
         self.lookUpTime.grid(row=1, column=1)
 
 
@@ -155,20 +155,20 @@ class OsDemo():
         self.leftBoxRightHalf = self.memoryArcitectureCanvas.create_rectangle( 130, 90, 170, 110, fill="" )
 
         #down pointing line to expanding table
-        self.leftBoxLineToBuffer = self.memoryArcitectureCanvas.create_line( 110, 110, 200, 200 )
-        self.rightBoxLineToBuffer = self.memoryArcitectureCanvas.create_line( 200, 200, 270, 100 )
+        self.leftBoxLineToBuffer = self.memoryArcitectureCanvas.create_line( 110, 110, 200, 200, arrow=LAST )
+        self.rightBoxLineToBuffer = self.memoryArcitectureCanvas.create_line( 200, 200, 270, 100, arrow=LAST )
 
 
         #lines that connect double boxes
-        self.topLineLeft = self.memoryArcitectureCanvas.create_line( 170, 100, 270, 80 )
-        self.topLineRight = self.memoryArcitectureCanvas.create_line( 270, 80, 330, 90 )
+        self.topLineLeft = self.memoryArcitectureCanvas.create_line( 170, 100, 270, 80, arrow=FIRST )
+        self.topLineRight = self.memoryArcitectureCanvas.create_line( 270, 80, 330, 90, arrow=FIRST )
 
         #right hand side double box
         self.rightBoxLeftHalf = self.memoryArcitectureCanvas.create_rectangle( 270, 90, 310, 110, fill="" )
         self.rightBoxRightHalf = self.memoryArcitectureCanvas.create_rectangle( 310, 90, 350, 110, fill="" )
 
         #farthest right hand line segment to memory pages
-        self.memoryArcitectureCanvas.create_line( 350, 100, 400, 200 )
+        self.memoryArcitectureCanvas.create_line( 350, 100, 400, 200, arrow=LAST )
 
         #left side double box inner values
         self.leftBoxMemoryValue = self.memoryArcitectureCanvas.create_text( 110, 100, text="val" )
@@ -436,9 +436,9 @@ class OsDemo():
             self.paintMiss()
         #do things
         
-        self.displayMemAccTimeNumber.insert(0, self.hitMissRatio( self.hitCounter,\
+        self.displayMemAccTimeNumber.insert(0, float("{0:.2f}".format(self.hitMissRatio( self.hitCounter,\
             int(self.memoryLookUpTimeNumber.get()), self.missCounter,\
-            int(self.lookUpTimeNumber.get()) ) )
+            int(self.lookUpTimeNumber.get()) ) )))
         
 
     def displayMemoryData(self):
@@ -541,7 +541,7 @@ class OsDemo():
 
         # display miss value
         self.missNumberString = StringVar()
-        self.missNumber = Label(self.memoryManagementPage, textvariable=self.hitsNumberString, relief=FLAT )
+        self.missNumber = Label(self.memoryManagementPage, textvariable=self.missNumberString, relief=FLAT )
         self.missString.set(str(self.missCounter))
         self.missNumber.grid(row=largestFrameRow, column=6 )
         """
@@ -616,9 +616,9 @@ class OsDemo():
         self.memoryArcitectureCanvas.itemconfig(self.leftBoxLineToBuffer, fill="green")
         self.memoryArcitectureCanvas.itemconfig(self.leftBoxLineToBuffer, fill="blue")
 
-        self.memoryArcitectureCanvas.itemconfig(self.rightBoxLineToBuffer, fill="green")
+        self.memoryArcitectureCanvas.itemconfig(self.rightBoxLineToBuffer, fill="blue")
 
-        self.memoryArcitectureCanvas.itemconfig(self.rightBoxMemoryValue, fill="black")
+        self.memoryArcitectureCanvas.itemconfig(self.rightBoxMemoryValue, text="value", fill="black")
         self.memoryArcitectureCanvas.itemconfig(self.rightBoxLeftHalf, fill="")
         self.memoryArcitectureCanvas.itemconfig(self.rightBoxDiskValue, text="ans", fill="black")
 
@@ -627,6 +627,7 @@ class OsDemo():
 
         #set on disk values
         self.memoryArcitectureCanvas.itemconfig(self.leftBoxDiskValue, text=(self.actualMemoryString + self.offsetString), fill="black")
+        
 
         self.memoryArcitectureCanvas.itemconfig(self.leftBoxRightHalf, fill="")
         self.memoryArcitectureCanvas.itemconfig(self.rightBoxRightHalf, fill="")
