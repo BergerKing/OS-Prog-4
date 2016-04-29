@@ -1,5 +1,6 @@
 import sys
 from random import randint
+from random import randrange
 from operator import itemgetter
 from tkinter import ttk
 from tkinter import *
@@ -595,7 +596,7 @@ class OsDemo():
         frameRow = frameRow + 1
         self.pageBtn.grid(row=frameRow, column=2)
 
-        self.pushBtn = ui.Button(self.pagingPage, text ="Run Algorithm", command = self.Optimal)
+        self.pushBtn = ui.Button(self.pagingPage, text ="Run Algorithm", command = self.NRU)
         self.pushBtn.grid(row=frameRow, column=3)
 
         self.EntryFlag = True
@@ -793,8 +794,10 @@ class OsDemo():
     def NRU(self):
 
         #needs a pair for each frame
-
         framePairs = []
+        
+        for num in self.frameEntry:
+            framePairs.append([0,0])
         
         faultCount = 0
         for index in self.refList:
@@ -814,6 +817,10 @@ class OsDemo():
                     
             if (flag == False):
                 found = -1
+                zeroZeroList = []
+                zeroOneList = []
+                oneZeroList = []
+                oneOneList = []
                 faultCount += 1
                 for val in range(self.numberOfFrame):
 
@@ -822,19 +829,25 @@ class OsDemo():
                     curr = index
 
                     #if (0,0) put in (0,0) list
+                    if (framePairs[val][0] == 0 and framePairs[val][1] == 0):
+                        zeroZeroList.append(val)
+                        
 
                     #if (0,1) put in (0,1) list
+                    if (framePairs[val][0] == 0 and framePairs[val][1] == 1):
+                        zeroOneList.append(val)
 
                     #if (1,0) put in (1,0) list
+                    if (framePairs[val][0] == 1 and framePairs[val][1] == 0):
+                        oneZeroList.append(val)
 
                     #if (1,1) ignore actually don't do this thing
-                            
-                    if (found == -1):
-                        maxDist = 100
-                        found = val
-                        break
+                    if (framePairs[val][0] == 1 and framePairs[val][1] == 1):
+                        oneOneList.append(val)
+
 
                 #delete random from (0,0) list
+                
 
                 #if none deleted
                 #delete random from (0,1) list
