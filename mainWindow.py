@@ -73,6 +73,9 @@ class OsDemo():
         ###################################################################################
         self.memoryManagementPage = ttk.Frame(self.notebook)
 
+        self.missCounter = 0
+        self.hitCounter = 0
+
 
         # Table Look Up label label
         self.lookUpTimeString = StringVar()
@@ -352,7 +355,7 @@ class OsDemo():
         self.generateGantt(gantt, ganttTimeUsed)
 
     def priority(self):
-        print("here")
+        #print("here")
         processSort = self.process
         processSort = sorted(processSort, key=itemgetter(2))
         processSort = sorted(processSort, key=itemgetter(3))
@@ -400,7 +403,9 @@ class OsDemo():
             index.insert(0, "N/A")
 
     # Calculate hit miss ration
-    def hitMissRation(numberHit, memoryLookUpTime, numberMiss, tableLookupTime):
+    def hitMissRatio(self, numberHit, memoryLookUpTime, numberMiss, tableLookupTime):
+        if( (numberHit + numberMiss) == 0 ):
+            return 0
         return ( (numberHit/(numberHit+numberMiss) * memoryLookUpTime) + (numberMiss/(numberMiss + numberHit) * tableLookupTime) )
 
 
@@ -412,6 +417,11 @@ class OsDemo():
         else:
             self.paintMiss()
         #do things
+        
+        self.displayMemAccTimeNumber.insert(0, self.hitMissRatio( self.hitCounter,\
+            self.memoryLookUpTimeNumber.get(), self.missCounter,\
+            self.lookUpTimeNumber.get() ) )
+        
 
     def displayMemoryData(self):
 
@@ -429,7 +439,7 @@ class OsDemo():
         frameRow = 9
         self.inRamFrameEntry = []
         self.inRamframeString = []
-        self.numberOfBufferFrames = int(self.numberOfFramesNumber.get())
+        self.numberOfBufferFrames = min(int(self.numberOfFramesNumber.get()), 10)
         for num in range(self.numberOfBufferFrames):
             #should populate at least some Frames ###########################################
             self.inRamframeString.append(StringVar())
@@ -442,7 +452,7 @@ class OsDemo():
         frameRow2 = 9
         self.inMemPageEntry = []
         self.inMemPageString = []
-        self.numberOfMemoryPages = int(self.numberOfPagesNumber.get())
+        self.numberOfMemoryPages = min(int(self.numberOfPagesNumber.get()), 10)
         for num in range(self.numberOfMemoryPages):
             #should populate page ##################################################
             self.inMemPageString.append(StringVar())
@@ -474,15 +484,26 @@ class OsDemo():
         #page start button
         if( largestFrameRow > 0 ):
             self.newMemeryOperationButton.grid_forget()
+            #self.resetCountersButton.grid_forget()
+            
         self.newMemeryOperationButton = ui.Button(self.memoryManagementPage, text ="Run a Memory Operation", command = self.runMemoryOperation)
         largestFrameRow = largestFrameRow + 1
         self.newMemeryOperationButton.grid(row=largestFrameRow, column=2, columnspan=2)
 
+        self.resetCountersButton = ui.Button(self.memoryManagementPage, text ="Reset Counters", command = self.resetSpeeds)
+        self.resetCountersButton.grid(row=largestFrameRow, column=4, columnspan=2)
+
         self.MemoryFlag = True
+        return
 
     def determineHit(self):
         #loop though frame buffer, if address not there return false
         self.hit = False
+
+        if (self.hit):
+            self.hitCounter = self.hitCounter + 1
+        else:
+            self.missCounter = self.missCounter + 1
         return
 
     def paintHit(self):
@@ -517,6 +538,11 @@ class OsDemo():
         self.memoryArcitectureCanvas.itemconfig(self.rightBoxLeftHalf, fill="red")
         self.memoryArcitectureCanvas.itemconfig(self.cpuToLeftBoxLine, fill="red")
         
+        return
+
+    def resetSpeeds(self):
+        self.missCounter = 0
+        self.hitCounter = 0
         return
 
 
