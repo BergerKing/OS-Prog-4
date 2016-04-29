@@ -74,9 +74,6 @@ class OsDemo():
         ###################################################################################
         self.memoryManagementPage = ttk.Frame(self.notebook)
 
-        self.missCounter = 0
-        self.hitCounter = 0
-
 
         # Table Look Up label label
         self.lookUpTimeString = StringVar()
@@ -356,7 +353,6 @@ class OsDemo():
         self.generateGantt(gantt, ganttTimeUsed)
 
     def priority(self):
-        #print("here")
         processSort = self.process
         processSort = sorted(processSort, key=itemgetter(2))
         processSort = sorted(processSort, key=itemgetter(3))
@@ -404,9 +400,7 @@ class OsDemo():
             index.insert(0, "N/A")
 
     # Calculate hit miss ration
-    def hitMissRatio(self, numberHit, memoryLookUpTime, numberMiss, tableLookupTime):
-        if( (numberHit + numberMiss) == 0 ):
-            return 0
+    def hitMissRation(numberHit, memoryLookUpTime, numberMiss, tableLookupTime):
         return ( (numberHit/(numberHit+numberMiss) * memoryLookUpTime) + (numberMiss/(numberMiss + numberHit) * tableLookupTime) )
 
 
@@ -418,11 +412,6 @@ class OsDemo():
         else:
             self.paintMiss()
         #do things
-        
-        self.displayMemAccTimeNumber.insert(0, self.hitMissRatio( self.hitCounter,\
-            self.memoryLookUpTimeNumber.get(), self.missCounter,\
-            self.lookUpTimeNumber.get() ) )
-        
 
     def displayMemoryData(self):
 
@@ -440,7 +429,7 @@ class OsDemo():
         frameRow = 9
         self.inRamFrameEntry = []
         self.inRamframeString = []
-        self.numberOfBufferFrames = min(int(self.numberOfFramesNumber.get()), 10)
+        self.numberOfBufferFrames = int(self.numberOfFramesNumber.get())
         for num in range(self.numberOfBufferFrames):
             #should populate at least some Frames ###########################################
             self.inRamframeString.append(StringVar())
@@ -453,7 +442,7 @@ class OsDemo():
         frameRow2 = 9
         self.inMemPageEntry = []
         self.inMemPageString = []
-        self.numberOfMemoryPages = min(int(self.numberOfPagesNumber.get()), 10)
+        self.numberOfMemoryPages = int(self.numberOfPagesNumber.get())
         for num in range(self.numberOfMemoryPages):
             #should populate page ##################################################
             self.inMemPageString.append(StringVar())
@@ -485,26 +474,15 @@ class OsDemo():
         #page start button
         if( largestFrameRow > 0 ):
             self.newMemeryOperationButton.grid_forget()
-            #self.resetCountersButton.grid_forget()
-            
         self.newMemeryOperationButton = ui.Button(self.memoryManagementPage, text ="Run a Memory Operation", command = self.runMemoryOperation)
         largestFrameRow = largestFrameRow + 1
         self.newMemeryOperationButton.grid(row=largestFrameRow, column=2, columnspan=2)
 
-        self.resetCountersButton = ui.Button(self.memoryManagementPage, text ="Reset Counters", command = self.resetSpeeds)
-        self.resetCountersButton.grid(row=largestFrameRow, column=4, columnspan=2)
-
         self.MemoryFlag = True
-        return
 
     def determineHit(self):
         #loop though frame buffer, if address not there return false
         self.hit = False
-
-        if (self.hit):
-            self.hitCounter = self.hitCounter + 1
-        else:
-            self.missCounter = self.missCounter + 1
         return
 
     def paintHit(self):
@@ -539,11 +517,6 @@ class OsDemo():
         self.memoryArcitectureCanvas.itemconfig(self.rightBoxLeftHalf, fill="red")
         self.memoryArcitectureCanvas.itemconfig(self.cpuToLeftBoxLine, fill="red")
         
-        return
-
-    def resetSpeeds(self):
-        self.missCounter = 0
-        self.hitCounter = 0
         return
 
 
@@ -596,13 +569,26 @@ class OsDemo():
         frameRow = frameRow + 1
         self.pageBtn.grid(row=frameRow, column=2)
 
-        self.pushBtn = ui.Button(self.pagingPage, text ="Run Algorithm", command = self.NRU)
+        self.pushBtn = ui.Button(self.pagingPage, text ="Run Algorithm", command = self.algorithmCallback)
         self.pushBtn.grid(row=frameRow, column=3)
 
         self.EntryFlag = True
         
     def pageCallBack(self):
         self.generateRefString()
+
+    def algorithmCallback(self):
+        if(self.pageVar.get() == "FIFO"):
+            self.FIFO()
+        if(self.pageVar.get() == "Optimal"):
+            self.Optimal()
+        if(self.pageVar.get() == "LRU"):
+            self.LRU()
+        if(self.pageVar.get() == "LFU"):
+            self.LFU()
+        if(self.pageVar.get() == "NRU"):
+            self.NRU()
+        
 
     def generateRefString(self):
         self.refList = []
@@ -793,6 +779,18 @@ class OsDemo():
         return
     def NRU(self):
 
+        pairStrings = []
+        pairLabels = []
+        frameRow = 10
+
+        for lab in range(self.numberOfFrame):
+            pairStrings.append(StringVar())
+            pairLabels.append(Label(self.pagingPage, textvariable=pairStrings[lab], relief=FLAT ))
+
+            pairStrings[lab].set("(0 0)")
+            pairLabels[lab].grid(row=frameRow, column=3)
+            frameRow = frameRow + 1
+
         #needs a pair for each frame
         framePairs = []
         
@@ -802,6 +800,10 @@ class OsDemo():
         faultCount = 0
         for index in self.refList:
 
+            for pair in framePairs:
+                pair[0] = 0
+                pair[1] = randint(0, 1)
+                
             flag = False
             for val in self.frameEntry:
                 if (str(index) == val.get()):
@@ -824,44 +826,82 @@ class OsDemo():
                 faultCount += 1
                 for val in range(self.numberOfFrame):
 
-                    found = -1
-                    frame = self.frameEntry[val].get()
-                    curr = index
-
                     #if (0,0) put in (0,0) list
                     if (framePairs[val][0] == 0 and framePairs[val][1] == 0):
                         zeroZeroList.append(val)
+                        pairStrings[val].set("(0 0)")
                         
 
                     #if (0,1) put in (0,1) list
                     if (framePairs[val][0] == 0 and framePairs[val][1] == 1):
                         zeroOneList.append(val)
+                        pairStrings[val].set("(0 1)")
 
                     #if (1,0) put in (1,0) list
                     if (framePairs[val][0] == 1 and framePairs[val][1] == 0):
                         oneZeroList.append(val)
+                        pairStrings[val].set("(1 0)")
 
                     #if (1,1) ignore actually don't do this thing
                     if (framePairs[val][0] == 1 and framePairs[val][1] == 1):
                         oneOneList.append(val)
+                        pairStrings[val].set("(1 1)")
+
+                for firstBit in range(len(framePairs)):
+                    framePairs[firstBit][0] = 0
 
 
                 #delete random from (0,0) list
-                
+                if (len(zeroZeroList) != 0):
+                    random_index = randrange(0,len(zeroZeroList))
+                    deleteLocation = zeroZeroList[random_index]
+                    framePairs[zeroZeroList[random_index]][0] = 1
 
                 #if none deleted
                 #delete random from (0,1) list
+                elif (len(zeroOneList) != 0):
+                    random_index = randrange(0,len(zeroOneList))
+                    deleteLocation = zeroOneList[random_index]
+                    framePairs[zeroOneList[random_index]][0] = 1
 
                 #if none deleted
                 #delete random from (1,0) list
+                elif (len(oneZeroList) != 0):
+                    random_index = randrange(0,len(oneZeroList))
+                    deleteLocation = oneZeroList[random_index]
+                    framePairs[oneZeroList[random_index]][0] = 1
 
                 #if none deleted
                 #delete random from all frames
+                elif (len(oneOneList) != 0):
+                    random_index = randrange(0,len(oneOneList))
+                    deleteLocation = oneOneList[random_index]
+                    framePairs[oneOneList[random_index]][0] = 1
 
-                    
-                if (found != -1):
-                    self.frameEntry[found].delete(0, END)
-                    self.frameEntry[found].insert(0, self.refList[index])
+                #set final pair string
+                for val in range(self.numberOfFrame):
+
+                    #if (0,0) put in (0,0) list
+                    if (framePairs[val][0] == 0 and framePairs[val][1] == 0):
+                        pairStrings[val].set("(0 0)")
+                        
+
+                    #if (0,1) put in (0,1) list
+                    if (framePairs[val][0] == 0 and framePairs[val][1] == 1):
+                        pairStrings[val].set("(0 1)")
+
+                    #if (1,0) put in (1,0) list
+                    if (framePairs[val][0] == 1 and framePairs[val][1] == 0):
+                        pairStrings[val].set("(1 0)")
+
+                    #if (1,1) ignore actually don't do this thing
+                    if (framePairs[val][0] == 1 and framePairs[val][1] == 1):
+                        pairStrings[val].set("(1 1)")
+                
+                 
+                
+                self.frameEntry[deleteLocation].delete(0, END)
+                self.frameEntry[deleteLocation].insert(0, index)
 
                     
         self.faultEntry.delete(0, END)
